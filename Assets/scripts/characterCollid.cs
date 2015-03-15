@@ -16,7 +16,7 @@ public class characterCollid : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if(other.tag=="spikes"){
 			//Debug.Log("Die!");
-			Application.LoadLevel("level7");
+			Application.LoadLevel(Application.loadedLevel);
 		}
 	}
 
