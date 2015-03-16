@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class main : MonoBehaviour {
+public class mian : MonoBehaviour {
 	public GameObject character;
 	public GameObject room;
 	public GameObject VRcamera;
@@ -9,11 +9,7 @@ public class main : MonoBehaviour {
 	private bool rotating=false;
 	private bool moving=false;
 	private bool falling=false;
-	public static bool BlockMoving = false;
-
-	private float pit = 0;
-	private float hea = 0;
-	private float rol = 0;
+	private bool BlockMoving = false;
 
 
 	private Vector3 characterVel = new Vector3(0f,0f,0f);
@@ -46,7 +42,6 @@ public class main : MonoBehaviour {
 		//Debug.Log (BottomFace());
 
 		if(rotating == false){
-			Debug.Log(BottomFace());
 			block_level7.instance.moveBlock(BottomFace());
 		}
 
@@ -60,38 +55,15 @@ public class main : MonoBehaviour {
 
 	private void ControllerRot(){
 
-
-		if(falling==false && BlockMoving==false){
-			pit=Controller.pitch;
-			hea=Controller.heading;
-			rol=Controller.roll;
-
-			Debug.Log(room.transform.rotation.eulerAngles.x);
-			Debug.Log(room.transform.rotation.eulerAngles.y);
-			Debug.Log(room.transform.rotation.eulerAngles.z);
-
-			//Debug.Log(pit);
-			//Debug.Log(rol);
-			//Debug.Log(hea);
-			//Debug.Log(Mathf.Abs( room.transform.rotation.eulerAngles.x-pit)+","+Mathf.Abs( room.transform.rotation.eulerAngles.y-hea)+","+Mathf.Abs( room.transform.rotation.eulerAngles.z-rol));
+		if(falling==false){
+			room.transform.rotation=Quaternion.Lerp( room.transform.rotation,Quaternion.Euler( new Vector3(Controller.pitch,Controller.heading,Controller.roll)), Time.deltaTime*4);
 		}
-
-		room.transform.rotation=Quaternion.Lerp( room.transform.rotation,Quaternion.Euler( new Vector3(pit,hea,rol)), Time.deltaTime*4);
-
-
-
 		character.transform.rotation = Quaternion.Euler( 0,0,0);
 
 		Vector3 roomOrientation = room.transform.rotation.eulerAngles;
-		roomOrientation.x = StickToNinty (roomOrientation.x,2);
-		roomOrientation.y = StickToNinty (roomOrientation.y,2);
-		roomOrientation.z = StickToNinty (roomOrientation.z,2);
-		room.transform.rotation = Quaternion.Euler( roomOrientation);
-
-		if (atNinties(pit)==true && atNinties(hea)==true && atNinties(rol)==true
-		    && (atNinties(roomOrientation.x-pit) == true ) 
-		    && (atNinties( roomOrientation.y-hea) == true )
-		    && (atNinties(roomOrientation.z-rol) == true )
+	
+		if (atNinties(Controller.pitch)==true && atNinties(Controller.heading)==true && atNinties(Controller.roll)==true
+		    && (Mathf.Abs( roomOrientation.x-Controller.pitch) <0.01f) && (Mathf.Abs( roomOrientation.y-Controller.heading) <0.01f)&& (Mathf.Abs( roomOrientation.z-Controller.roll) <0.1f)
 		    ){
 			rotating=false;
 
@@ -225,41 +197,7 @@ public class main : MonoBehaviour {
 
 
 
-	private float StickToNinty(float value, int range){
-		
-		if((value>90-range && value<90+range)){
-			return 90;
-		}
-		else if(value>-range && value<range) {
-			return 0;
-		}
-		
-		else if(value>180-range && value<180+range){
-			return 180;
-		}
-		else if(value>-90-range && value<-90+range){
-			return -90;
-		}
-		else if(value>-180-range && value<-180+range){
-			return -180;
-		}
-		else if(value>-270-range && value<-270+range){
-			return -270;
-		}
-		else if(value>-360-range && value<-360+range){
-			return -360;
-		}
-		else if(value>270-range && value<270+range){
-			return 270;
-		}
-		else if(value>360-range && value<360+range){
-			return 360;
-		}
-		else{
-			return value;
-		}
-		
-	}
+
 
 
 	private bool atNinties(float value ){

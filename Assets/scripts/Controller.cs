@@ -29,9 +29,9 @@ public class Controller : MonoBehaviour {
 		pitch = (Input.GetAxis("Pitch")+1)*90-90;
 		roll = (Input.GetAxis ("Roll")+1)*180-180; 
 		
-		heading = StickToNinty (heading, 45);
-		pitch = StickToNinty (pitch, 45);
-		roll = StickToNinty (roll, 45);
+		heading = StickToNinty (heading, 30);
+		pitch = StickToNinty (pitch, 20);
+		roll = StickToNinty (roll, 20);
 		
 		
 		//RotRoom.transform.rotation=Quaternion.Lerp( transform.rotation,Quaternion.Euler( new Vector3(pitch,heading,roll)), Time.deltaTime*4);
