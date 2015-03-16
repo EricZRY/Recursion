@@ -9,7 +9,6 @@ public class block_level7 : MonoBehaviour {
 	private Vector3 state4=new Vector3(0.035f,-0.114f,-0.075f); 
 
 	private float vel=0;
-	private float temp;
 
 	private bool bounced= false;
 
@@ -74,18 +73,9 @@ public class block_level7 : MonoBehaviour {
 		}
 		else if (state==2){
 			if(bottomFace=="FORWARD"){
-				//stair at the original position
-				if(stair_level7.instance.state==0){
-					if(transform.localPosition.x>-0.021f){
-						blockMovingAccel();
-					}
-					else{
-						bounceAndStop(state3,3);
-					}
-					transform.position+=transform.TransformDirection(Vector3.left) * vel;
-				}
+
 				//stair on the way
-				else if(stair_level7.instance.state==1){
+				if(stair_level7.instance.state==1){
 					if(transform.localPosition.x>0.035f){
 						blockMovingAccel();
 					}
@@ -94,6 +84,17 @@ public class block_level7 : MonoBehaviour {
 					}
 					transform.position+=transform.TransformDirection(Vector3.left) * vel;
 				}
+				//stair at the original position
+				else{
+					if(transform.localPosition.x>-0.021f){
+						blockMovingAccel();
+					}
+					else{
+						bounceAndStop(state3,3);
+					}
+					transform.position+=transform.TransformDirection(Vector3.left) * vel;
+				}
+
 			}
 			if(bottomFace=="RIGHT"){
 				if(transform.localPosition.y<0.06f){
