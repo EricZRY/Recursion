@@ -4,7 +4,10 @@ using System.Collections;
 public class main : MonoBehaviour {
 	public GameObject character;
 	public GameObject room;
+	public GameObject innerRoom;
 	public GameObject VRcamera;
+
+	private bool sceneInit=false;
 
 	private bool rotating=false;
 	private bool moving=false;
@@ -36,7 +39,19 @@ public class main : MonoBehaviour {
 			//rotateSpace ();
 		}
 		else if(mode == "ControllerVR"){
-			ControllerRot();
+
+			if(sceneInit==true){
+				ControllerRot();
+			}
+			else{
+					if(Controller.pitch!=0 || Controller.roll!=0 || Controller.heading!=0){
+						room.transform.rotation=Quaternion.Euler(new Vector3(Controller.pitch,Controller.heading,Controller.roll));
+						innerRoom.transform.rotation=Quaternion.Euler(new Vector3(0,0,0));
+					}
+					sceneInit=true;
+
+
+			}
 		}
 		else if(mode == "keyBoard"){
 			KeyBoardRot();
@@ -46,9 +61,21 @@ public class main : MonoBehaviour {
 		//Debug.Log (BottomFace());
 
 		if(rotating == false){
-			Debug.Log(BottomFace());
+			//Debug.Log(BottomFace());
 			block_level7.instance.moveBlock(BottomFace());
+			stair_level7.instance.moveBlock(BottomFace());
+
+
+			if(BottomFace()=="LEFT"){
+				characterCollid.flagOrientation=true;
+			}
+			else{
+				characterCollid.flagOrientation=false;
+			}
+
 		}
+
+
 
 	}
 
@@ -66,9 +93,9 @@ public class main : MonoBehaviour {
 			hea=Controller.heading;
 			rol=Controller.roll;
 
-			Debug.Log(room.transform.rotation.eulerAngles.x);
-			Debug.Log(room.transform.rotation.eulerAngles.y);
-			Debug.Log(room.transform.rotation.eulerAngles.z);
+//			Debug.Log(room.transform.rotation.eulerAngles.x);
+//			Debug.Log(room.transform.rotation.eulerAngles.y);
+//			Debug.Log(room.transform.rotation.eulerAngles.z);
 
 			//Debug.Log(pit);
 			//Debug.Log(rol);
@@ -107,7 +134,7 @@ public class main : MonoBehaviour {
 //		Debug.Log (falling);
 
 		if(rotating==false){
-			velMax(7f,0.1f);
+			velMax(7f,0.05f);
 			characterHover(2.2f);
 			characterMove();
 
@@ -117,9 +144,9 @@ public class main : MonoBehaviour {
 
 
 	private string BottomFace(){
-		Vector3 roomDownDirection = room.transform.TransformDirection (Vector3.down);
-		Vector3 roomForwardDirection = room.transform.TransformDirection (Vector3.forward);
-		Vector3 roomRightDirection = room.transform.TransformDirection (Vector3.right);
+		Vector3 roomDownDirection = innerRoom.transform.TransformDirection (Vector3.down);
+		Vector3 roomForwardDirection = innerRoom.transform.TransformDirection (Vector3.forward);
+		Vector3 roomRightDirection = innerRoom.transform.TransformDirection (Vector3.right);
 
 		if(roomDownDirection == new Vector3(0,-1,0)){
 			return "DOWN";

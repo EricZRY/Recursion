@@ -3,6 +3,8 @@ using System.Collections;
 
 public class characterCollid : MonoBehaviour {
 
+	public static bool flagOrientation=false;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -17,6 +19,10 @@ public class characterCollid : MonoBehaviour {
 		if(other.tag=="spikes"){
 			//Debug.Log("Die!");
 			Application.LoadLevel(Application.loadedLevel);
+		}
+
+		if(other.tag=="flag" && flagOrientation==true ){
+			Application.LoadLevel("Splash");
 		}
 	}
 

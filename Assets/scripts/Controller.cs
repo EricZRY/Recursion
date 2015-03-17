@@ -3,7 +3,8 @@ using System.Collections;
 
 public class Controller : MonoBehaviour {
 	private float firstHeading=0;
-	private bool getFirstValue=false;
+
+	public static bool getFirstValue=false;
 
 
 	public static float heading;
@@ -12,7 +13,9 @@ public class Controller : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	}
-	
+	void Awake() {
+		DontDestroyOnLoad(transform.gameObject);
+	}
 	// Update is called once per frame
 	void Update () {
 		if (getFirstValue==false && Input.GetAxis("Heading" )!=0) {
