@@ -77,6 +77,7 @@ public class Controller : MonoBehaviour {
 		if (clibrateMode) {
 			
 			GameObject backGround=GameObject.Find("pCube1");
+			GameObject structure=GameObject.Find("structure");
 			GameObject sceneHolder=GameObject.Find("scene");
 			GameObject innerScene=GameObject.Find ("innerscene");
 			GameObject ctrCube=GameObject.Find("controllerCube");
@@ -90,6 +91,12 @@ public class Controller : MonoBehaviour {
 				}
 				else {
 					gettoOriginalOrientation=true;
+
+					backGround.renderer.material.color=new Color32(96,99,95,255);
+					setSpecularColor(backGround, new Color32(112,86,0,255));
+					
+					structure.renderer.material.color=new Color32(112,77,64,255);
+					setSpecularColor(structure, new Color32(148,0,0,255));
 				}
 				
 				sceneInit=true;
@@ -102,11 +109,16 @@ public class Controller : MonoBehaviour {
 				   StickToNinty( ctrCube.transform.rotation.eulerAngles.y,1)==0  &&
 				   StickToNinty( ctrCube.transform.rotation.eulerAngles.z,1)==0 
 				   ){
-					backGround.renderer.material.color=Color.Lerp( backGround.renderer.material.color,new Color(scale(0,255,0,1,67),scale(0,255,0,1,79),scale(0,255,0,1,73),1),Time.deltaTime *0.5f);
-					text.color=Color.Lerp(text.color, new Color(255,255,255,0), Time.deltaTime * 1f);
+					backGround.renderer.material.color=Color.Lerp( backGround.renderer.material.color,new Color32(96,99,95,255),Time.deltaTime *0.5f);
+					setSpecularColor(backGround, Color.Lerp( getSpecularColor(backGround),new Color32(112,86,0,255),Time.deltaTime *0.5f));
+
+					structure.renderer.material.color=Color.Lerp( structure.renderer.material.color,new Color32(112,77,64,255),Time.deltaTime *0.5f);
+					setSpecularColor(structure, Color.Lerp( getSpecularColor(structure),new Color32(148,0,0,255),Time.deltaTime *0.5f));
+
+					text.color=Color.Lerp(text.color, new Color(1,1,1,0), Time.deltaTime * 1f);
 
 					
-					if(backGround.renderer.material.color.r >= scale(0,255,0,1,65)){
+					if(backGround.renderer.material.color.g >= scale(0,255,0,1,98)){
 						gettoOriginalOrientation = true;
 					}
 				}
@@ -114,7 +126,11 @@ public class Controller : MonoBehaviour {
 					ctrCube.transform.rotation=Quaternion.Lerp( ctrCube.transform.rotation,Quaternion.Euler( new Vector3(pitch,heading,roll)), Time.deltaTime*4);
 					
 					
-					backGround.renderer.material.color=new Color(0.05f,0.05f,0.05f,1);
+					backGround.renderer.material.color=new Color(0.03f,0.03f,0.03f,1);
+					setSpecularColor(backGround,new Color32(62,21,3,255));
+
+					structure.renderer.material.color=new Color32(11,3,0,255);
+					setSpecularColor(structure,new Color32(58,51,13,255));
 					//"rotate the controller until you see the two arrows point to the same direction  "
 					text.GetComponent<TextMeshPro>().SetText("rotate the cube until you see\nthe two arrows point to the same direction",0f);
 					text.color=Color.Lerp(text.color, Color.white, Time.deltaTime * 1f);
@@ -124,7 +140,7 @@ public class Controller : MonoBehaviour {
 
 			if(gettoOriginalOrientation==true && getFourValues==false){
 				//"rotate the controller colckwise" 
-				text.GetComponent<TextMeshPro>().SetText("rotate the cube colckwise four times",0f);
+				text.GetComponent<TextMeshPro>().SetText("keep the arrow up\nand rotate the cube colckwise",0f);
 				text.color=Color.Lerp(text.color, Color.white, Time.deltaTime * 1f);
 
 				//cube rotating animation
@@ -144,6 +160,19 @@ public class Controller : MonoBehaviour {
 	}
 
 
+
+	void setSpecularColor(GameObject obj, Color color){
+		Renderer rend = obj.GetComponent<Renderer>();
+
+		rend.material.SetColor("_SpecColor", color);
+	}
+
+	 Color getSpecularColor(GameObject obj){
+		Renderer rend = obj.GetComponent<Renderer>();
+		return rend.material.GetColor("_SpecColor");
+	}
+
+	
 	
 	float getError(float value){
 		float Error;
