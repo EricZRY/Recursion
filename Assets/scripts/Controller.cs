@@ -28,6 +28,10 @@ public class Controller : MonoBehaviour {
 	private float sensorValueAtTwoSeven=0;
 	private float sensorValueAtZero=0;
 
+	private bool havingValue = false;
+
+	private int calibrateFin=0;
+
 	void Start () {
 	}
 	void Awake() {
@@ -47,7 +51,7 @@ public class Controller : MonoBehaviour {
 		
 		
 		
-		heading = (Input.GetAxis("Heading" )+1)*180-180-firstHeading;
+		calculateHeading(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sens);
 		pitch = (Input.GetAxis("Pitch")+1)*90-90;
 		roll = (Input.GetAxis ("Roll")+1)*180-180; 
 
@@ -72,7 +76,7 @@ public class Controller : MonoBehaviour {
 
 
 
-		//--------------------------clibrate----------------------------
+		//--------------------------calibrate----------------------------
 
 		if (clibrateMode) {
 			
@@ -81,6 +85,10 @@ public class Controller : MonoBehaviour {
 			GameObject sceneHolder=GameObject.Find("scene");
 			GameObject innerScene=GameObject.Find ("innerscene");
 			GameObject ctrCube=GameObject.Find("controllerCube");
+			GameObject arrow=GameObject.Find("arrow");
+			GameObject arrows=GameObject.Find("arrows");
+			Animator animator = GameObject.Find("Cube"). GetComponent<Animator>();
+
 			TextMeshPro text=  GameObject.Find("Text1").GetComponent<TextMeshPro>();
 
 			if(sceneInit==false){
@@ -91,12 +99,6 @@ public class Controller : MonoBehaviour {
 				}
 				else {
 					gettoOriginalOrientation=true;
-
-					backGround.renderer.material.color=new Color32(96,99,95,255);
-					setSpecularColor(backGround, new Color32(112,86,0,255));
-					
-					structure.renderer.material.color=new Color32(112,77,64,255);
-					setSpecularColor(structure, new Color32(148,0,0,255));
 				}
 				
 				sceneInit=true;
@@ -109,54 +111,235 @@ public class Controller : MonoBehaviour {
 				   StickToNinty( ctrCube.transform.rotation.eulerAngles.y,1)==0  &&
 				   StickToNinty( ctrCube.transform.rotation.eulerAngles.z,1)==0 
 				   ){
-					backGround.renderer.material.color=Color.Lerp( backGround.renderer.material.color,new Color32(96,99,95,255),Time.deltaTime *0.5f);
-					setSpecularColor(backGround, Color.Lerp( getSpecularColor(backGround),new Color32(112,86,0,255),Time.deltaTime *0.5f));
 
-					structure.renderer.material.color=Color.Lerp( structure.renderer.material.color,new Color32(112,77,64,255),Time.deltaTime *0.5f);
-					setSpecularColor(structure, Color.Lerp( getSpecularColor(structure),new Color32(148,0,0,255),Time.deltaTime *0.5f));
-
-					text.color=Color.Lerp(text.color, new Color(1,1,1,0), Time.deltaTime * 1f);
-
-					
-					if(backGround.renderer.material.color.g >= scale(0,255,0,1,98)){
+					if(text.color.a < 0.05){
+						text.color=new Color(1,1,1,0);
 						gettoOriginalOrientation = true;
 					}
+					else{
+						text.color=Color.Lerp(text.color, new Color(1,1,1,0), Time.deltaTime * 5f);
+					}
+
 				}
 				else{
+					if(StickToNinty( backGround.transform.rotation.eulerAngles.x,1)!=0  ||
+					   StickToNinty( backGround.transform.rotation.eulerAngles.y,1)!=0  ||
+					   StickToNinty( backGround.transform.rotation.eulerAngles.z,1)!=0 
+					   ){
+						backGround.transform.rotation=Quaternion.Lerp( backGround.transform.rotation,Quaternion.Euler( 0,0,0), Time.deltaTime*4);
+					}
+					else{
+						backGround.transform.rotation=Quaternion.Euler( 0,0,0);
+					}
+
 					ctrCube.transform.rotation=Quaternion.Lerp( ctrCube.transform.rotation,Quaternion.Euler( new Vector3(pitch,heading,roll)), Time.deltaTime*4);
 					
 					
-					backGround.renderer.material.color=new Color(0.03f,0.03f,0.03f,1);
-					setSpecularColor(backGround,new Color32(62,21,3,255));
 
-					structure.renderer.material.color=new Color32(11,3,0,255);
-					setSpecularColor(structure,new Color32(58,51,13,255));
+					specularLerp(backGround,new Color(0.03f,0.03f,0.03f,1),new Color32(62,21,3,255),0.5f);
+					specularLerp(structure,new Color32(11,3,0,255),new Color32(58,51,13,255),0.5f);
+					specularLerp(arrow,new Color32(98,94,81,255),new Color32(21,105,102,255),0.5f);
+					specularLerp(arrows,new Color32(68,36,6,255),new Color32(116,122,246,255),0.5f);
+
 					//"rotate the controller until you see the two arrows point to the same direction  "
-					text.GetComponent<TextMeshPro>().SetText("rotate the cube until you see\nthe two arrows point to the same direction",0f);
+					if(checkValues()==5){
+						text.GetComponent<TextMeshPro>().SetText("rotate the cube until you see\nthe two arrows point to the same direction",0f);
+					}
+					else if(checkValues()==0){
+						text.GetComponent<TextMeshPro>().SetText("Illegal values. Please do it again\nrotate the cube until you see\nthe two arrows point to the same direction",0f);
+					}
 					text.color=Color.Lerp(text.color, Color.white, Time.deltaTime * 1f);
 
 				}
 			}
 
 			if(gettoOriginalOrientation==true && getFourValues==false){
+				specularLerp(backGround,new Color32(96,99,95,255),new Color32(112,86,0,255),0.5f);
+				specularLerp(structure,new Color32(79,45,32,255),new Color32(148,0,0,255),0.5f);			
+				specularLerp(arrow,new Color32(118,102,32,255),new Color32(255,90,0,255),0.5f);
+				specularLerp(arrows,new Color32(98,94,81,255),new Color32(21,105,102,255),0.5f);
+
+
+
 				//"rotate the controller colckwise" 
 				text.GetComponent<TextMeshPro>().SetText("keep the arrow up\nand rotate the cube colckwise",0f);
 				text.color=Color.Lerp(text.color, Color.white, Time.deltaTime * 1f);
 
 				//cube rotating animation
-				Animator animator = GameObject.Find("Cube"). GetComponent<Animator>();
 				animator.SetBool("getfourvalues", true);
-				//controller control the room
 
+				//controller control the room
 				backGround.transform.rotation=Quaternion.Lerp( backGround.transform.rotation,Quaternion.Euler( new Vector3(pitch,heading,roll)), Time.deltaTime*4);
 
-			}
-			//back to menu automatically
+				//get the four values
+				if(Input.GetButtonDown("X") || Input.GetMouseButtonDown("0")){
+					havingValue=true;
+				}
+				if(havingValue){
+					calibrateFin+=1;
+					if(calibrateFin==1){
+						sensorValueAtNinty=(Input.GetAxis("Heading" )+1)*180-180;
+						Debug.Log((Input.GetAxis("Heading" )+1)*180-180);
+						havingValue=false;
+					}
+					else if(calibrateFin==2){
+						sensorValueAtPi=(Input.GetAxis("Heading" )+1)*180-180;
+						Debug.Log((Input.GetAxis("Heading" )+1)*180-180);
+						havingValue=false;
+					}
+					else if(calibrateFin==3){
+						sensorValueAtTwoSeven=(Input.GetAxis("Heading" )+1)*180-180;
+						Debug.Log((Input.GetAxis("Heading" )+1)*180-180);
+						havingValue=false;
+					}
+					else if(calibrateFin==4){
+						sensorValueAtZero=(Input.GetAxis("Heading" )+1)*180-180;
+						Debug.Log((Input.GetAxis("Heading" )+1)*180-180);
+						havingValue=false;
+					}
+				}
+
+				//check the values
+				if(calibrateFin==4){
+					//illegal values
+					if(checkValues()==0){
+						calibrateFin=0;
+						ctrCube.transform.rotation=Quaternion.Lerp( ctrCube.transform.rotation,Quaternion.Euler( new Vector3(pitch,heading,roll)), Time.deltaTime*4);
+						backGround.transform.rotation=Quaternion.Lerp( backGround.transform.rotation,Quaternion.Euler( 0,0,0), Time.deltaTime*4);
+						gettoOriginalOrientation =false;
+						animator.SetBool("getfourvalues", false);
+					}
+
+					else{
+						//get values successfully, back to menu
+
+					}
+				}
+
 			
+				//if rotate wrong, back to last step
+				if(StickToNinty( backGround.transform.rotation.eulerAngles.x,1)!=0  ||
+				   StickToNinty( backGround.transform.rotation.eulerAngles.z,1)!=0 
+				   ){
+						calibrateFin=0;
+						ctrCube.transform.rotation=Quaternion.Lerp( ctrCube.transform.rotation,Quaternion.Euler( new Vector3(pitch,heading,roll)), Time.deltaTime*4);
+						backGround.transform.rotation=Quaternion.Lerp( backGround.transform.rotation,Quaternion.Euler( 0,0,0), Time.deltaTime*4);
+						gettoOriginalOrientation =false;
+						animator.SetBool("getfourvalues", false);
+				}
+			}
+
+
 			
 		}
 		
 
+	}
+
+
+	void calculateHeading(float value1,float value2,float value3,float value4){
+
+		if (checkValues() == 1) {
+			if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >= value4 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value1) {
+				heading = scale (value4, value1,0 , 90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+			} else if ((((Input.GetAxis ("Heading") + 1) * 180 - 180) >= value1 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < 180)) {
+				heading = scale (value1, 180+180+value2, 90, 180, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+			} else if ((((Input.GetAxis ("Heading") + 1) * 180 - 180) >= -180 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value2)) {
+				heading = scale (-180-180+value1, value2, 90, 180, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=value2 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <value3) {
+				heading = scale (value2, value3, -180, -90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+			}else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=value3 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <value4) {
+				heading = scale (value3, value4,-90, 0, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+				
+			}
+
+		}
+		else if(checkValues() == 2){
+			if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >= value4 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value1) {
+				heading = scale (value4, value1,0 , 90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+			} else if ((((Input.GetAxis ("Heading") + 1) * 180 - 180) >= value1 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value2)) {
+				heading = scale (value1, value2, 90, 180, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=value2 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <180) {
+				heading = scale (value2, 180+180+value3, -180, -90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=-180 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <value3) {
+				heading = scale (-180-180+value2, value3, -180, -90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+			}else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=value3 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <value4) {
+				heading = scale (value3, value4,-90, 0, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+				
+			}
+
+		}
+		else if(checkValues()==3){
+			if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >= value4 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value1) {
+				heading = scale (value4, value1,0 , 90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+			} else if ((((Input.GetAxis ("Heading") + 1) * 180 - 180) >= value1 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value2)) {
+				heading = scale (value1, value2, 90, 180, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=value2 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <value3) {
+				heading = scale (value2, value3, -180, -90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=value3 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <180) {
+				heading = scale (value3, 180+180+value4,-90, 0, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+				
+			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >= -180 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value4) {
+				heading = scale (-180-180+value3, value4, -90, 0, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+				
+			}
+
+		}
+		else if(checkValues()==4){
+			if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >= value4 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < 180) {
+				heading = scale (value4, 180+180+value1,0 , 90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >= -180 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value1) {
+				heading = scale (-180-180+value4, value1,0 , 90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+			} else if ((((Input.GetAxis ("Heading") + 1) * 180 - 180) >= value1 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value2)) {
+				heading = scale (value1, value2, 90, 180, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=value2 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <value3) {
+				heading = scale (value2, value3, -180, -90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=value3 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <value4) {
+				heading = scale (value3, value4,-90, 0, (Input.GetAxis ("Heading") + 1) * 180 - 180);
+			} 
+		}
+		else{
+			heading = (Input.GetAxis("Heading" )+1)*180-180-firstHeading;
+		}
+	}
+
+	
+	int checkValues(){
+						if (sensorValueAtNinty < sensorValueAtPi && sensorValueAtPi > sensorValueAtTwoSeven && sensorValueAtTwoSeven < sensorValueAtZero && sensorValueAtZero < sensorValueAtNinty){
+							return 2;
+						}
+						else if(sensorValueAtNinty < sensorValueAtPi && sensorValueAtPi < sensorValueAtTwoSeven && sensorValueAtTwoSeven > sensorValueAtZero && sensorValueAtZero < sensorValueAtNinty){
+							return 3;
+						}
+						else if(sensorValueAtNinty < sensorValueAtPi && sensorValueAtPi < sensorValueAtTwoSeven && sensorValueAtTwoSeven < sensorValueAtZero && sensorValueAtZero > sensorValueAtNinty){
+							return 4;
+						}
+						else if(sensorValueAtNinty > sensorValueAtPi && sensorValueAtPi < sensorValueAtTwoSeven && sensorValueAtTwoSeven < sensorValueAtZero && sensorValueAtZero < sensorValueAtNinty){
+							return 1;
+						}
+						else if(sensorValueAtNinty == sensorValueAtPi && sensorValueAtPi == sensorValueAtTwoSeven && sensorValueAtTwoSeven == sensorValueAtZero && sensorValueAtZero == sensorValueAtNinty){
+							return 5;
+						}
+						else{
+							return 0;
+						}
+
+		   }						
+
+
+	void fadeOutText(TextMeshPro textm){
+		if(textm.color.a < 0.05){
+			textm.color=new Color(1,1,1,0);
+		}
+		else{
+			textm.color=Color.Lerp(textm.color, new Color(1,1,1,0), Time.deltaTime * 5f);
+		}
+	}
+	
+
+	void specularLerp(GameObject obj, Color diffColor, Color specularColor,float speed){
+		obj.renderer.material.color=Color.Lerp( obj.renderer.material.color,diffColor,Time.deltaTime *speed);
+		setSpecularColor(obj, Color.Lerp( getSpecularColor(obj),specularColor,Time.deltaTime *speed));
 	}
 
 
