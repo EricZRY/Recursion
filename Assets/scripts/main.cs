@@ -7,12 +7,13 @@ public class main : MonoBehaviour {
 	public GameObject innerRoom;
 	public GameObject VRcamera;
 
+	public GameObject controller;
+
 	private bool sceneInit=false;
 
 	private bool rotating=false;
 	private bool moving=false;
 	private bool falling=false;
-	public static bool BlockMoving = false;
 
 	private float pit = 0;
 	private float hea = 0;
@@ -25,6 +26,15 @@ public class main : MonoBehaviour {
 
 	private string mode = "ControllerVR";
 
+	public static main instance { get; private set; }
+
+	void Awake(){
+		instance = this;
+
+		if (GameObject.Find ("Controller(Clone)") == null) {
+			Instantiate(controller, new Vector3(0, 0, 0), Quaternion.identity) ;
+		}
+	}
 
 	void Start () {
 		rotating = false;
@@ -35,6 +45,12 @@ public class main : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+//		if (Input.GetMouseButtonDown (0)) {
+//			Application.LoadLevel(Application.loadedLevel);
+//
+//		}
+
+
 		if(mode == "GamePad"){
 			//rotateSpace ();
 		}
@@ -46,7 +62,7 @@ public class main : MonoBehaviour {
 			else{
 					if(Controller.pitch!=0 || Controller.roll!=0 || Controller.heading!=0){
 						room.transform.rotation=Quaternion.Euler(new Vector3(Controller.pitch,Controller.heading,Controller.roll));
-						innerRoom.transform.rotation=Quaternion.Euler(new Vector3(0,0,0));
+						innerRoom.transform.rotation=Quaternion.Euler(new Vector3(0,-90,0));
 					}
 					sceneInit=true;
 
@@ -62,8 +78,8 @@ public class main : MonoBehaviour {
 
 		if(rotating == false){
 			//Debug.Log(BottomFace());
-			block_level7.instance.moveBlock(BottomFace());
-			stair_level7.instance.moveBlock(BottomFace());
+//			block_level7.instance.moveBlock(BottomFace());
+//			stair_level7.instance.moveBlock(BottomFace());
 
 
 			if(BottomFace()=="LEFT"){
@@ -88,7 +104,7 @@ public class main : MonoBehaviour {
 	private void ControllerRot(){
 
 
-		if(falling==false && BlockMoving==false){
+		if(falling==false ){
 			pit=Controller.pitch;
 			hea=Controller.heading;
 			rol=Controller.roll;
@@ -143,7 +159,7 @@ public class main : MonoBehaviour {
 	}
 
 
-	private string BottomFace(){
+	public string BottomFace(){
 		Vector3 roomDownDirection = innerRoom.transform.TransformDirection (Vector3.down);
 		Vector3 roomForwardDirection = innerRoom.transform.TransformDirection (Vector3.forward);
 		Vector3 roomRightDirection = innerRoom.transform.TransformDirection (Vector3.right);
