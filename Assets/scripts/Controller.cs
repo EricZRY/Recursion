@@ -51,7 +51,7 @@ public class Controller : MonoBehaviour {
 		
 		
 		
-		calculateHeading(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sens);
+		calculateHeading(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sensorValueAtZero);
 		pitch = (Input.GetAxis("Pitch")+1)*90-90;
 		roll = (Input.GetAxis ("Roll")+1)*180-180; 
 
@@ -172,7 +172,7 @@ public class Controller : MonoBehaviour {
 				backGround.transform.rotation=Quaternion.Lerp( backGround.transform.rotation,Quaternion.Euler( new Vector3(pitch,heading,roll)), Time.deltaTime*4);
 
 				//get the four values
-				if(Input.GetButtonDown("X") || Input.GetMouseButtonDown("0")){
+				if(Input.GetButtonDown("X") || Input.GetMouseButtonDown(0)){
 					havingValue=true;
 				}
 				if(havingValue){
@@ -212,7 +212,11 @@ public class Controller : MonoBehaviour {
 
 					else{
 						//get values successfully, back to menu
-
+						animator.SetBool("getfourvalues", false);
+						text.GetComponent<TextMeshPro>().SetText("calibration finished",0f);
+						text.color=Color.Lerp(text.color, Color.white, Time.deltaTime * 1f);
+						clibrateMode=false;
+						StartCoroutine(backToMenu());
 					}
 				}
 
@@ -228,73 +232,73 @@ public class Controller : MonoBehaviour {
 						animator.SetBool("getfourvalues", false);
 				}
 			}
-
-
-			
 		}
-		
+	}
+
+	IEnumerator backToMenu(){
+		yield return new WaitForSeconds(2);
+		Application.LoadLevel("Splash");
 
 	}
 
 
 	void calculateHeading(float value1,float value2,float value3,float value4){
-
+		float sensorHeadingValue=(Input.GetAxis ("Heading") + 1) * 180 - 180;
 		if (checkValues() == 1) {
-			if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >= value4 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value1) {
+			if (sensorHeadingValue >= value4 && sensorHeadingValue < value1) {
 				heading = scale (value4, value1,0 , 90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
-			} else if ((((Input.GetAxis ("Heading") + 1) * 180 - 180) >= value1 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < 180)) {
+			} else if (sensorHeadingValue >= value1 && sensorHeadingValue < 180) {
 				heading = scale (value1, 180+180+value2, 90, 180, (Input.GetAxis ("Heading") + 1) * 180 - 180);
-			} else if ((((Input.GetAxis ("Heading") + 1) * 180 - 180) >= -180 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value2)) {
+			} else if (sensorHeadingValue >= -180 && sensorHeadingValue < value2) {
 				heading = scale (-180-180+value1, value2, 90, 180, (Input.GetAxis ("Heading") + 1) * 180 - 180);
-			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=value2 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <value3) {
+			} else if (sensorHeadingValue >=value2 && sensorHeadingValue <value3) {
 				heading = scale (value2, value3, -180, -90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
-			}else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=value3 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <value4) {
+			}else if (sensorHeadingValue >=value3 && sensorHeadingValue <value4) {
 				heading = scale (value3, value4,-90, 0, (Input.GetAxis ("Heading") + 1) * 180 - 180);
 				
 			}
 
 		}
 		else if(checkValues() == 2){
-			if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >= value4 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value1) {
+			if (sensorHeadingValue >= value4 && sensorHeadingValue < value1) {
 				heading = scale (value4, value1,0 , 90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
-			} else if ((((Input.GetAxis ("Heading") + 1) * 180 - 180) >= value1 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value2)) {
+			} else if (sensorHeadingValue >= value1 && sensorHeadingValue < value2) {
 				heading = scale (value1, value2, 90, 180, (Input.GetAxis ("Heading") + 1) * 180 - 180);
-			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=value2 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <180) {
+			} else if (sensorHeadingValue >=value2 && sensorHeadingValue <180) {
 				heading = scale (value2, 180+180+value3, -180, -90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
-			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=-180 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <value3) {
+			} else if (sensorHeadingValue >=-180 && sensorHeadingValue <value3) {
 				heading = scale (-180-180+value2, value3, -180, -90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
-			}else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=value3 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <value4) {
+			}else if (sensorHeadingValue >=value3 && sensorHeadingValue <value4) {
 				heading = scale (value3, value4,-90, 0, (Input.GetAxis ("Heading") + 1) * 180 - 180);
 				
 			}
 
 		}
 		else if(checkValues()==3){
-			if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >= value4 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value1) {
+			if (sensorHeadingValue >= value4 && sensorHeadingValue < value1) {
 				heading = scale (value4, value1,0 , 90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
-			} else if ((((Input.GetAxis ("Heading") + 1) * 180 - 180) >= value1 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value2)) {
+			} else if (sensorHeadingValue >= value1 && sensorHeadingValue < value2) {
 				heading = scale (value1, value2, 90, 180, (Input.GetAxis ("Heading") + 1) * 180 - 180);
-			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=value2 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <value3) {
+			} else if (sensorHeadingValue>=value2 && sensorHeadingValue <value3) {
 				heading = scale (value2, value3, -180, -90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
-			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=value3 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <180) {
+			} else if (sensorHeadingValue >=value3 && sensorHeadingValue <180) {
 				heading = scale (value3, 180+180+value4,-90, 0, (Input.GetAxis ("Heading") + 1) * 180 - 180);
-				
-			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >= -180 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value4) {
+			} else if (sensorHeadingValue >= -180 && sensorHeadingValue < value4) {
 				heading = scale (-180-180+value3, value4, -90, 0, (Input.GetAxis ("Heading") + 1) * 180 - 180);
 				
 			}
 
 		}
 		else if(checkValues()==4){
-			if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >= value4 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < 180) {
+			if (sensorHeadingValue>= value4 && sensorHeadingValue < 180) {
 				heading = scale (value4, 180+180+value1,0 , 90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
-			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >= -180 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value1) {
+			} else if (sensorHeadingValue >= -180 && sensorHeadingValue < value1) {
 				heading = scale (-180-180+value4, value1,0 , 90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
-			} else if ((((Input.GetAxis ("Heading") + 1) * 180 - 180) >= value1 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) < value2)) {
+			} else if (sensorHeadingValue >= value1 && sensorHeadingValue < value2) {
 				heading = scale (value1, value2, 90, 180, (Input.GetAxis ("Heading") + 1) * 180 - 180);
-			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=value2 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <value3) {
+			} else if (sensorHeadingValue >=value2 && sensorHeadingValue <value3) {
 				heading = scale (value2, value3, -180, -90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
-			} else if (((Input.GetAxis ("Heading") + 1) * 180 - 180) >=value3 && ((Input.GetAxis ("Heading") + 1) * 180 - 180) <value4) {
+			} else if (sensorHeadingValue>=value3 && sensorHeadingValue<value4) {
 				heading = scale (value3, value4,-90, 0, (Input.GetAxis ("Heading") + 1) * 180 - 180);
 			} 
 		}
@@ -305,26 +309,25 @@ public class Controller : MonoBehaviour {
 
 	
 	int checkValues(){
-						if (sensorValueAtNinty < sensorValueAtPi && sensorValueAtPi > sensorValueAtTwoSeven && sensorValueAtTwoSeven < sensorValueAtZero && sensorValueAtZero < sensorValueAtNinty){
-							return 2;
-						}
-						else if(sensorValueAtNinty < sensorValueAtPi && sensorValueAtPi < sensorValueAtTwoSeven && sensorValueAtTwoSeven > sensorValueAtZero && sensorValueAtZero < sensorValueAtNinty){
-							return 3;
-						}
-						else if(sensorValueAtNinty < sensorValueAtPi && sensorValueAtPi < sensorValueAtTwoSeven && sensorValueAtTwoSeven < sensorValueAtZero && sensorValueAtZero > sensorValueAtNinty){
-							return 4;
-						}
-						else if(sensorValueAtNinty > sensorValueAtPi && sensorValueAtPi < sensorValueAtTwoSeven && sensorValueAtTwoSeven < sensorValueAtZero && sensorValueAtZero < sensorValueAtNinty){
-							return 1;
-						}
-						else if(sensorValueAtNinty == sensorValueAtPi && sensorValueAtPi == sensorValueAtTwoSeven && sensorValueAtTwoSeven == sensorValueAtZero && sensorValueAtZero == sensorValueAtNinty){
-							return 5;
-						}
-						else{
-							return 0;
-						}
-
-		   }						
+		if (sensorValueAtNinty < sensorValueAtPi && sensorValueAtPi > sensorValueAtTwoSeven && sensorValueAtTwoSeven < sensorValueAtZero && sensorValueAtZero < sensorValueAtNinty){
+			return 2;
+		}
+		else if(sensorValueAtNinty < sensorValueAtPi && sensorValueAtPi < sensorValueAtTwoSeven && sensorValueAtTwoSeven > sensorValueAtZero && sensorValueAtZero < sensorValueAtNinty){
+			return 3;
+		}
+		else if(sensorValueAtNinty < sensorValueAtPi && sensorValueAtPi < sensorValueAtTwoSeven && sensorValueAtTwoSeven < sensorValueAtZero && sensorValueAtZero > sensorValueAtNinty){
+			return 4;
+		}
+		else if(sensorValueAtNinty > sensorValueAtPi && sensorValueAtPi < sensorValueAtTwoSeven && sensorValueAtTwoSeven < sensorValueAtZero && sensorValueAtZero < sensorValueAtNinty){
+			return 1;
+		}
+		else if(sensorValueAtNinty == sensorValueAtPi && sensorValueAtPi == sensorValueAtTwoSeven && sensorValueAtTwoSeven == sensorValueAtZero && sensorValueAtZero == sensorValueAtNinty){
+			return 5;
+		}
+		else{
+			return 0;
+		}
+  }						
 
 
 	void fadeOutText(TextMeshPro textm){
