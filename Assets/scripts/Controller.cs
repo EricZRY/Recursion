@@ -22,7 +22,7 @@ public class Controller : MonoBehaviour {
 	public static float pitch;
 	public static float roll;
 
-
+//-----calibrate---------
 	private float sensorValueAtNinty=0;
 	private float sensorValueAtPi=0;
 	private float sensorValueAtTwoSeven=0;
@@ -32,6 +32,21 @@ public class Controller : MonoBehaviour {
 
 	private int calibrateFin=0;
 
+
+	GameObject backGround;
+	GameObject structure;
+	GameObject sceneHolder;
+	GameObject innerScene;
+	GameObject ctrCube;
+	GameObject arrow;
+	GameObject arrows;
+	Animator animator;
+	
+	TextMeshPro text;
+
+
+	
+//------------------------
 	void Start () {
 	}
 	void Awake() {
@@ -79,17 +94,25 @@ public class Controller : MonoBehaviour {
 		//--------------------------calibrate----------------------------
 
 		if (clibrateMode) {
-			
-			GameObject backGround=GameObject.Find("pCube1");
-			GameObject structure=GameObject.Find("structure");
-			GameObject sceneHolder=GameObject.Find("scene");
-			GameObject innerScene=GameObject.Find ("innerscene");
-			GameObject ctrCube=GameObject.Find("controllerCube");
-			GameObject arrow=GameObject.Find("arrow");
-			GameObject arrows=GameObject.Find("arrows");
-			Animator animator = GameObject.Find("Cube"). GetComponent<Animator>();
 
-			TextMeshPro text=  GameObject.Find("Text1").GetComponent<TextMeshPro>();
+			if(text==null || animator==null || arrows==null || arrow==null 
+			   || ctrCube==null || innerScene==null || sceneHolder==null 
+			   || structure==null || backGround==null){
+
+
+				 backGround=GameObject.Find("pCube1");
+				 structure=GameObject.Find("structure");
+				 sceneHolder=GameObject.Find("scene");
+				 innerScene=GameObject.Find ("innerscene");
+				 ctrCube=GameObject.Find("controllerCube");
+				 arrow=GameObject.Find("arrow");
+				 arrows=GameObject.Find("arrows");
+				 animator = GameObject.Find("Cube"). GetComponent<Animator>();
+
+				 text=  GameObject.Find("Text1").GetComponent<TextMeshPro>();
+
+			}
+
 
 			if(sceneInit==false){
 				if((heading!=0 || pitch!=0 || roll!=0) ){
