@@ -45,6 +45,9 @@ public class Controller : MonoBehaviour {
 	TextMeshPro text;
 
 
+	public float[] defaultCalibrateValue= new float[4];
+
+
 	
 //------------------------
 	void Start () {
@@ -65,10 +68,26 @@ public class Controller : MonoBehaviour {
 		}
 		
 		
-		
-		calculateHeading(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sensorValueAtZero);
+		if(calibrateFin==4  ){
+
+			calculateHeading(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sensorValueAtZero);
+
+		}
+		else{
+
+			if(defaultCalibrateValue[0]==0 && defaultCalibrateValue[1]==0 && defaultCalibrateValue[2]==0  && defaultCalibrateValue[3]==0){
+				calculateHeading(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sensorValueAtZero);
+			}
+			else{
+				calculateHeading(defaultCalibrateValue[0],defaultCalibrateValue[1],defaultCalibrateValue[2],defaultCalibrateValue[3]);
+
+			}
+		}
+
+
 		pitch = (Input.GetAxis("Pitch")+1)*90-90;
 		roll = (Input.GetAxis ("Roll")+1)*180-180; 
+
 
 //		if ((Input.GetButtonDown ("X")) || (Input.GetButtonDown ("Y")) || (Input.GetButtonDown ("Z"))) {
 //			
@@ -165,10 +184,10 @@ public class Controller : MonoBehaviour {
 					specularLerp(arrows,new Color32(68,36,6,255),new Color32(116,122,246,255),0.5f);
 
 					//"rotate the controller until you see the two arrows point to the same direction  "
-					if(checkValues()==5){
+					if(checkValues(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sensorValueAtZero)==5){
 						text.GetComponent<TextMeshPro>().SetText("rotate the cube until you see\nthe two arrows point to the same direction",0f);
 					}
-					else if(checkValues()==0){
+					else if(checkValues(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sensorValueAtZero)==0){
 						text.GetComponent<TextMeshPro>().SetText("Illegal values. Please do it again\nrotate the cube until you see\nthe two arrows point to the same direction",0f);
 					}
 					text.color=Color.Lerp(text.color, Color.white, Time.deltaTime * 1f);
@@ -225,7 +244,7 @@ public class Controller : MonoBehaviour {
 				//check the values
 				if(calibrateFin==4){
 					//illegal values
-					if(checkValues()==0){
+					if(checkValues(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sensorValueAtZero)==0){
 						calibrateFin=0;
 						ctrCube.transform.rotation=Quaternion.Lerp( ctrCube.transform.rotation,Quaternion.Euler( new Vector3(pitch,heading,roll)), Time.deltaTime*4);
 						backGround.transform.rotation=Quaternion.Lerp( backGround.transform.rotation,Quaternion.Euler( 0,0,0), Time.deltaTime*4);
@@ -267,7 +286,7 @@ public class Controller : MonoBehaviour {
 
 	void calculateHeading(float value1,float value2,float value3,float value4){
 		float sensorHeadingValue=(Input.GetAxis ("Heading") + 1) * 180 - 180;
-		if (checkValues() == 1) {
+		if (checkValues(value1,value2,value3,value4) == 1) {
 			if (sensorHeadingValue >= value4 && sensorHeadingValue < value1) {
 				heading = scale (value4, value1,0 , 90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
 			} else if (sensorHeadingValue >= value1 && sensorHeadingValue < 180) {
@@ -282,7 +301,7 @@ public class Controller : MonoBehaviour {
 			}
 
 		}
-		else if(checkValues() == 2){
+		else if(checkValues(value1,value2,value3,value4) == 2){
 			if (sensorHeadingValue >= value4 && sensorHeadingValue < value1) {
 				heading = scale (value4, value1,0 , 90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
 			} else if (sensorHeadingValue >= value1 && sensorHeadingValue < value2) {
@@ -297,7 +316,7 @@ public class Controller : MonoBehaviour {
 			}
 
 		}
-		else if(checkValues()==3){
+		else if(checkValues(value1,value2,value3,value4)==3){
 			if (sensorHeadingValue >= value4 && sensorHeadingValue < value1) {
 				heading = scale (value4, value1,0 , 90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
 			} else if (sensorHeadingValue >= value1 && sensorHeadingValue < value2) {
@@ -312,7 +331,7 @@ public class Controller : MonoBehaviour {
 			}
 
 		}
-		else if(checkValues()==4){
+		else if(checkValues(value1,value2,value3,value4)==4){
 			if (sensorHeadingValue>= value4 && sensorHeadingValue < 180) {
 				heading = scale (value4, 180+180+value1,0 , 90, (Input.GetAxis ("Heading") + 1) * 180 - 180);
 			} else if (sensorHeadingValue >= -180 && sensorHeadingValue < value1) {
@@ -326,32 +345,34 @@ public class Controller : MonoBehaviour {
 			} 
 		}
 		else{
-			heading = (Input.GetAxis("Heading" )+1)*180-180-firstHeading;
+				heading = (Input.GetAxis("Heading" )+1)*180-180-firstHeading;
+		
 		}
 	}
 
-	
-	int checkValues(){
-		if (sensorValueAtNinty < sensorValueAtPi && sensorValueAtPi > sensorValueAtTwoSeven && sensorValueAtTwoSeven < sensorValueAtZero && sensorValueAtZero < sensorValueAtNinty){
+		
+
+	int checkValues(float value1,float value2,float value3,float value4){
+		if (value1 < value2 && value2 > value3 && value3 < value4 && value4 < value1){
 			return 2;
 		}
-		else if(sensorValueAtNinty < sensorValueAtPi && sensorValueAtPi < sensorValueAtTwoSeven && sensorValueAtTwoSeven > sensorValueAtZero && sensorValueAtZero < sensorValueAtNinty){
+		else if(value1 < value2 && value2 < value3 && value3 > value4 && value4 < value1){
 			return 3;
 		}
-		else if(sensorValueAtNinty < sensorValueAtPi && sensorValueAtPi < sensorValueAtTwoSeven && sensorValueAtTwoSeven < sensorValueAtZero && sensorValueAtZero > sensorValueAtNinty){
+		else if(value1 < value2 && value2 < value3 && value3 < value4 && value4 > value1){
 			return 4;
 		}
-		else if(sensorValueAtNinty > sensorValueAtPi && sensorValueAtPi < sensorValueAtTwoSeven && sensorValueAtTwoSeven < sensorValueAtZero && sensorValueAtZero < sensorValueAtNinty){
+		else if(value1 > value2 && value2 < value3 && value3 < value4 && value4 < value1){
 			return 1;
 		}
-		else if(sensorValueAtNinty == sensorValueAtPi && sensorValueAtPi == sensorValueAtTwoSeven && sensorValueAtTwoSeven == sensorValueAtZero && sensorValueAtZero == sensorValueAtNinty){
+		else if(value1 == value2 && value2 == value3 && value3 == value4 && value4 == value1){
 			return 5;
 		}
 		else{
 			return 0;
 		}
-  }						
-
+	}				
+	
 
 	void fadeOutText(TextMeshPro textm){
 		if(textm.color.a < 0.05){
