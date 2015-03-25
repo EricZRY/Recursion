@@ -12,16 +12,23 @@ public class splashMain : MonoBehaviour {
 	private Vector3  error;
 	private bool gotFirstValue=false;
 
+	private GameObject VRcamera;
+	private GameObject[] subMenus=new GameObject[9];
+
 	void Awake(){
 
-		if (menu == null) {
-			menu=GameObject.Find("MENU");
+		menu=GameObject.Find("MENU");
+
+		VRcamera=GameObject.Find("CenterEyeAnchor");
+
+		for(int i=0;i<9;i++){
+			string menuid="menu"+(i+1);
+			subMenus[i]=GameObject.Find(menuid);
 		}
 
-		if (GameObject.Find ("Controller(Clone)") == null) {
-			controller=(GameObject)Resources.Load("prefabs/Controller");
-			Instantiate(controller, new Vector3(0, 0, 0), Quaternion.identity) ;
-		}
+		loadObject ("prefabs/Controller","Controller(Clone)", new Vector3(0, 0, 0), Quaternion.identity);
+
+		
 	}
 
 	void Start () {
@@ -79,7 +86,105 @@ public class splashMain : MonoBehaviour {
 			gotFirstValue=false;
 		}
 
+
+
+		for (int i=0;i<9;i++){
+			if(i==0 || (i>=4 && i<=8)){ 
+				if(subMenus[i].transform.position.z>=20){
+					subMenus[i].transform.position=new Vector3(0,0.23f,-25);
+				}
+				else if(subMenus[i].transform.position.z<=-30){
+					subMenus[i].transform.position=new Vector3(0,0.23f,15);
+				}
+				else if(subMenus[i].transform.position.z>=-5 && subMenus[i].transform.position.z<0){
+					subMenus[i].transform.position=new Vector3(0,0.23f,10);
+				}
+				else if(subMenus[i].transform.position.z<=5 && subMenus[i].transform.position.z>0){
+					subMenus[i].transform.position=new Vector3(0,0.23f,-10);
+				}
+			}
+
+			else{
+				if(subMenus[i].transform.position.z>=10){
+					subMenus[i].transform.position=new Vector3(0,0.23f,-5);
+				}
+				else if(subMenus[i].transform.position.z<=-10){
+					subMenus[i].transform.position=new Vector3(0,0.23f,5);
+				}
+			}
+		}
+
+
+
+		RaycastHit hit;
+		if (Physics.Raycast(VRcamera.transform.position, VRcamera.transform.TransformDirection(Vector3.forward),out hit,10)){
+			if(subMenus[3].transform.position.z==0 && hit.collider.gameObject.name=="start"){
+				//Debug.Log("load select level scene");
+				loadObject("prefabs/bar","bar(Clone)", hit.collider.transform.position+ new Vector3(0,-1,0),Quaternion.identity);
+
+				GameObject mask=GameObject.Find("mask");
+				GameObject selection=GameObject.Find("start");
+				mask.transform.localScale*=0.9f;
+				selection.renderer.material.color= Color.Lerp(new Color32(88,99,96,255),new Color32(112,56,56,255),1-mask.transform.lossyScale.x);
+
+				if(mask.transform.lossyScale.x<0.1f){
+					if(Controller.calibrateFin!=4){
+						Application.LoadLevel("clibrate");
+					}
+					else{
+						Application.LoadLevel("levelSelect");
+					}
+				}
+			}
+			else if(subMenus[2].transform.position.z==0 && hit.collider.gameObject.name=="calibrate"){
+				loadObject("prefabs/bar","bar(Clone)", hit.collider.transform.position+ new Vector3(0,-1,0),Quaternion.identity);
+				
+				GameObject mask=GameObject.Find("mask");
+				GameObject selection=GameObject.Find("start");
+				mask.transform.localScale*=0.9f;
+				selection.renderer.material.color= Color.Lerp(new Color32(88,99,96,255),new Color32(112,56,56,255),1-mask.transform.lossyScale.x);
+				
+				if(mask.transform.lossyScale.x<0.1f){
+						Application.LoadLevel("clibrate");
+				}
+			}
+			else if(subMenus[1].transform.position.z==0 && hit.collider.gameObject.name=="quit"){
+				//Debug.Log("load select level scene");
+				loadObject("prefabs/bar","bar(Clone)", hit.collider.transform.position+ new Vector3(0,-1,0),Quaternion.identity);
+				
+				GameObject mask=GameObject.Find("mask");
+				GameObject selection=GameObject.Find("start");
+				mask.transform.localScale*=0.9f;
+				selection.renderer.material.color= Color.Lerp(new Color32(88,99,96,255),new Color32(112,56,56,255),1-mask.transform.lossyScale.x);
+				
+				if(mask.transform.lossyScale.x<0.1f){
+					Application.Quit();
+				}
+			}
+		}
+		else{
+			Destroy(GameObject.Find("bar(Clone)"));
+			GameObject.Find("start").renderer.material.color=new Color32(88,99,96,255);
+			GameObject.Find("calibrate").renderer.material.color=new Color32(88,99,96,255);
+			GameObject.Find("quit").renderer.material.color=new Color32(88,99,96,255);
+		}
+
 	}
+
+
+
+
+
+
+
+	private void loadObject( string path, string name,Vector3 position,Quaternion rotation){
+		if (GameObject.Find (name) == null) {
+			GameObject controller=(GameObject)Resources.Load(path);
+			Instantiate(controller, position, rotation) ;
+		}
+	}
+
+
 
 	private void moveMenu(float value){
 			if(  atNinties(value)==true && gotFirstValue==false){
@@ -104,6 +209,7 @@ public class splashMain : MonoBehaviour {
 			}
 
 		}
+
 		menu.transform.position=Vector3.back * deltaValue*5/90+error;
 
 

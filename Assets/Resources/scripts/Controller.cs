@@ -30,7 +30,7 @@ public class Controller : MonoBehaviour {
 
 	private bool havingValue = false;
 
-	private int calibrateFin=0;
+	public static int calibrateFin=0;
 
 
 	GameObject backGround;
