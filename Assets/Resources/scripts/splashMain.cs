@@ -127,7 +127,7 @@ public class splashMain : MonoBehaviour {
 				mask.transform.localScale*=0.9f;
 				selection.renderer.material.color= Color.Lerp(new Color32(88,99,96,255),new Color32(112,56,56,255),1-mask.transform.lossyScale.x);
 
-				if(mask.transform.lossyScale.x<0.1f){
+				if(mask.transform.localScale.x<0.1f){
 					if(Controller.calibrateFin!=4){
 						Application.LoadLevel("clibrate");
 					}

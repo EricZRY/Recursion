@@ -6,32 +6,27 @@ public class fractal : MonoBehaviour {
 	public Material material;
 	public int maxDepth;
 	public float childScale;
-	private bool draw=true;
+	public static bool draw=true;
 	private int depth;
 
 	private void Start () {
 		gameObject.AddComponent<MeshFilter>().mesh = mesh;
 		gameObject.AddComponent<MeshRenderer>().material = material;
 
-	}
-
-
-	private void Update(){
-
-		if(draw==true){
-			if (depth < maxDepth) {
-				new GameObject("Fractal Child"+depth).AddComponent<fractal>().
-					Initialize(this, Vector3.up, Quaternion.identity);
-				new GameObject("Fractal Child"+depth).AddComponent<fractal>().
-					Initialize(this, Vector3.right, Quaternion.Euler(0f, 0f, -90f));	
-				new GameObject("Fractal Child"+depth).AddComponent<fractal>().
-					Initialize(this, Vector3.left, Quaternion.Euler(0f, 0f, 90f));
-				//			new GameObject("Fractal Child"+depth).AddComponent<fractal>().
-				//				Initialize(this, Vector3.back, Quaternion.Euler(90f, 180f, 0f));
-				draw=false;
-			}
+		if (depth < selectLevel.MaxDepth) {
+			new GameObject("Fractal Child").AddComponent<fractal>().
+				Initialize(this, Vector3.up, Quaternion.identity);
+			new GameObject("Fractal Child").AddComponent<fractal>().
+				Initialize(this, Vector3.right, Quaternion.Euler(0f, 0f, -90f));	
+			new GameObject("Fractal Child").AddComponent<fractal>().
+				Initialize(this, Vector3.left, Quaternion.Euler(0f, 0f, 90f));
+			//			new GameObject("Fractal Child"+depth).AddComponent<fractal>().
+			//				Initialize(this, Vector3.back, Quaternion.Euler(90f, 180f, 0f));
 		}
 	}
+
+
+
 
 
 	private void Initialize (fractal parent, Vector3 direction, Quaternion orientation) {
