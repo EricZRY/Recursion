@@ -7,6 +7,10 @@ public class main : MonoBehaviour {
 	public GameObject innerRoom;
 	public GameObject VRcamera;
 
+	public string WinFace;
+
+	private GameObject forwardAim;
+
 	public GameObject controller;
 
 	private bool sceneInit=false;
@@ -34,6 +38,7 @@ public class main : MonoBehaviour {
 		if (GameObject.Find ("Controller(Clone)") == null) {
 			Instantiate(controller, new Vector3(0, 0, 0), Quaternion.identity) ;
 		}
+		forwardAim = GameObject.Find ("faim");
 	}
 
 	void Start () {
@@ -82,7 +87,7 @@ public class main : MonoBehaviour {
 //			stair_level7.instance.moveBlock(BottomFace());
 
 
-			if(BottomFace()=="LEFT"){
+			if(BottomFace()==WinFace){
 				characterCollid.flagOrientation=true;
 			}
 			else{
@@ -120,6 +125,8 @@ public class main : MonoBehaviour {
 		}
 
 		room.transform.rotation=Quaternion.Lerp( room.transform.rotation,Quaternion.Euler( new Vector3(pit,hea,rol)), Time.deltaTime*4);
+		forwardAim.transform.rotation =
+			Quaternion.Euler (0,VRcamera.transform.rotation.eulerAngles.y,transform.rotation.eulerAngles.z);
 
 
 
@@ -150,7 +157,7 @@ public class main : MonoBehaviour {
 //		Debug.Log (falling);
 
 		if(rotating==false){
-			velMax(7f,0.05f);
+			velMax(7f,0.03f);
 			characterHover(2.2f);
 			characterMove();
 
@@ -190,19 +197,42 @@ public class main : MonoBehaviour {
 
 
 	private void characterMove(){
+		//trigger moving
 		if (Input.GetMouseButtonDown(1) && falling==false){
 			moving=true;
 		}
 		else if(Input.GetMouseButtonUp(1)){
 			moving=false;
-
 		}
-	
+
+		//Debug.Log (VRcamera.transform.rotation.eulerAngles.x);
+		if (Mathf.Abs (VRcamera.transform.rotation.eulerAngles.x) < 2.5f || Mathf.Abs (360-VRcamera.transform.rotation.eulerAngles.x)  < 2.5f) {
+			moving=true;
+		}
+		else {
+			moving=false;
+		}
+
+
+		//show aim
+		if(falling==false && rotating==false){
+			forwardAim.transform.GetChild(0).gameObject.renderer.material.color=Color.Lerp(forwardAim.transform.GetChild(0).gameObject.renderer.material.color,new Color32(0,255,128,98),Time.deltaTime*4);
+			if(forwardAim.transform.GetChild(1)!=null){
+			forwardAim.transform.GetChild(1).gameObject.renderer.material.color=Color.Lerp(forwardAim.transform.GetChild(1).gameObject.renderer.material.color,new Color32(255,255,255,255),Time.deltaTime*4);
+			}
+		}
+		else{
+			forwardAim.transform.GetChild(0).gameObject.renderer.material.color=Color.Lerp(forwardAim.transform.GetChild(0).gameObject.renderer.material.color,new Color32(0,255,128,0),Time.deltaTime*4);
+
+			if(forwardAim.transform.GetChild(1)!=null){
+			forwardAim.transform.GetChild(1).gameObject.renderer.material.color=Color.Lerp(forwardAim.transform.GetChild(1).gameObject.renderer.material.color,new Color32(255,255,255,0),Time.deltaTime*4);
+			}
+		}
+
 
 		if(moving==true && falling == false && rotating==false){
+
 			Vector3 fowardXZ= new Vector3(VRcamera.transform.TransformDirection(Vector3.forward).x,0,VRcamera.transform.TransformDirection(Vector3.forward).z);
-
-
 
 			Ray obscaleRay = new Ray(character.transform.position-Vector3.up*1.6f, fowardXZ);
 			RaycastHit hit;
@@ -211,12 +241,14 @@ public class main : MonoBehaviour {
 					moving=false;
 				}
 				else{
-					characterVel+= fowardXZ*0.03f;
+					characterVel+= fowardXZ*0.01f;
 					character.transform.position+=characterVel;
 				}
 			}
 
 		}
+
+
 
 		if(moving==false){
 			characterVel.x=0;

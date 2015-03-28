@@ -279,7 +279,7 @@ public class Controller : MonoBehaviour {
 
 	IEnumerator backToMenu(){
 		yield return new WaitForSeconds(2);
-		Application.LoadLevel("Splash");
+		Application.LoadLevel("level1");
 
 	}
 
