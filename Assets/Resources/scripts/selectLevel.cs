@@ -63,6 +63,7 @@ public class selectLevel : MonoBehaviour {
 
 							if(mask.transform.localScale.x<0.05f){
 								if(i==0){
+									Controller.clibrateMode=true;
 									Application.LoadLevel("clibrate");
 
 								}

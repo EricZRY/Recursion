@@ -128,12 +128,13 @@ public class splashMain : MonoBehaviour {
 				selection.renderer.material.color= Color.Lerp(new Color32(88,99,96,255),new Color32(112,56,56,255),1-mask.transform.lossyScale.x);
 
 				if(mask.transform.localScale.x<0.1f){
-					if(Controller.calibrateFin!=4){
-						Application.LoadLevel("clibrate");
-					}
-					else{
-						Application.LoadLevel("levelSelect");
-					}
+//					if(Controller.calibrateFin!=4){
+//						Controller.clibrateMode=true;
+//						Application.LoadLevel("clibrate");
+//					}
+//					else{
+						Application.LoadLevel("selectLevel");
+//					}
 				}
 			}
 			else if(subMenus[2].transform.position.z==0 && hit.collider.gameObject.name=="calibrate"){
@@ -145,6 +146,8 @@ public class splashMain : MonoBehaviour {
 				selection.renderer.material.color= Color.Lerp(new Color32(88,99,96,255),new Color32(112,56,56,255),1-mask.transform.lossyScale.x);
 				
 				if(mask.transform.lossyScale.x<0.1f){
+					Controller.clibrateMode=true;
+
 						Application.LoadLevel("clibrate");
 				}
 			}

@@ -33,6 +33,8 @@ public class main : MonoBehaviour {
 	public static main instance { get; private set; }
 
 	void Awake(){
+		sceneInit=false;
+
 		instance = this;
 
 		if (GameObject.Find ("Controller(Clone)") == null) {
@@ -44,7 +46,6 @@ public class main : MonoBehaviour {
 	void Start () {
 		rotating = false;
 		rotAngle = 0;
-
 
 	}
 	
@@ -65,13 +66,17 @@ public class main : MonoBehaviour {
 				ControllerRot();
 			}
 			else{
-					if(Controller.pitch!=0 || Controller.roll!=0 || Controller.heading!=0){
+				if(Controller.getFirstValue==true){
+				   if(Controller.pitch!=0 || Controller.heading!=0 || Controller.roll!=0 ){
 						room.transform.rotation=Quaternion.Euler(new Vector3(Controller.pitch,Controller.heading,Controller.roll));
-						innerRoom.transform.rotation=Quaternion.Euler(new Vector3(0,-90,0));
+						//Debug.Log(new Vector3(Controller.pitch,Controller.heading,Controller.roll));
+						innerRoom.transform.rotation=Quaternion.Euler(0,0,0);
+					
 					}
 					sceneInit=true;
 
-
+				}
+				
 			}
 		}
 		else if(mode == "keyBoard"){
@@ -108,23 +113,27 @@ public class main : MonoBehaviour {
 
 	private void ControllerRot(){
 
+			if(falling==false ){
+				pit=Controller.pitch;
+				hea=Controller.heading;
+				rol=Controller.roll;
 
-		if(falling==false ){
-			pit=Controller.pitch;
-			hea=Controller.heading;
-			rol=Controller.roll;
+	//			Debug.Log(room.transform.rotation.eulerAngles.x);
+	//			Debug.Log(room.transform.rotation.eulerAngles.y);
+	//			Debug.Log(room.transform.rotation.eulerAngles.z);
 
-//			Debug.Log(room.transform.rotation.eulerAngles.x);
-//			Debug.Log(room.transform.rotation.eulerAngles.y);
-//			Debug.Log(room.transform.rotation.eulerAngles.z);
+				//Debug.Log(pit);
+				//Debug.Log(rol);
+				//Debug.Log(hea);
+				//Debug.Log(Mathf.Abs( room.transform.rotation.eulerAngles.x-pit)+","+Mathf.Abs( room.transform.rotation.eulerAngles.y-hea)+","+Mathf.Abs( room.transform.rotation.eulerAngles.z-rol));
+			}
 
-			//Debug.Log(pit);
-			//Debug.Log(rol);
-			//Debug.Log(hea);
-			//Debug.Log(Mathf.Abs( room.transform.rotation.eulerAngles.x-pit)+","+Mathf.Abs( room.transform.rotation.eulerAngles.y-hea)+","+Mathf.Abs( room.transform.rotation.eulerAngles.z-rol));
-		}
 
-		room.transform.rotation=Quaternion.Lerp( room.transform.rotation,Quaternion.Euler( new Vector3(pit,hea,rol)), Time.deltaTime*4);
+			room.transform.rotation=Quaternion.Lerp( room.transform.rotation,Quaternion.Euler( new Vector3(pit,hea,rol)), Time.deltaTime*4);
+
+
+		
+
 		forwardAim.transform.rotation =
 			Quaternion.Euler (0,VRcamera.transform.rotation.eulerAngles.y,transform.rotation.eulerAngles.z);
 
@@ -217,15 +226,15 @@ public class main : MonoBehaviour {
 		//show aim
 		if(falling==false && rotating==false){
 			forwardAim.transform.GetChild(0).gameObject.renderer.material.color=Color.Lerp(forwardAim.transform.GetChild(0).gameObject.renderer.material.color,new Color32(0,255,128,98),Time.deltaTime*4);
-			if(forwardAim.transform.GetChild(1)!=null){
+			if(GameObject.Find("level1hint")!=null){
 			forwardAim.transform.GetChild(1).gameObject.renderer.material.color=Color.Lerp(forwardAim.transform.GetChild(1).gameObject.renderer.material.color,new Color32(255,255,255,255),Time.deltaTime*4);
 			}
 		}
 		else{
 			forwardAim.transform.GetChild(0).gameObject.renderer.material.color=Color.Lerp(forwardAim.transform.GetChild(0).gameObject.renderer.material.color,new Color32(0,255,128,0),Time.deltaTime*4);
 
-			if(forwardAim.transform.GetChild(1)!=null){
-			forwardAim.transform.GetChild(1).gameObject.renderer.material.color=Color.Lerp(forwardAim.transform.GetChild(1).gameObject.renderer.material.color,new Color32(255,255,255,0),Time.deltaTime*4);
+			if(GameObject.Find("level1hint")!=null){
+				GameObject.Find("level1hint").renderer.material.color=Color.Lerp(forwardAim.transform.GetChild(1).gameObject.renderer.material.color,new Color32(255,255,255,0),Time.deltaTime*4);
 			}
 		}
 

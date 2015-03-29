@@ -4,7 +4,7 @@ using TMPro;
 
 
 public class Controller : MonoBehaviour {
-	public bool clibrateMode = false;
+	public static bool clibrateMode = false;
 
 
 	private float firstHeading=0;
@@ -51,6 +51,7 @@ public class Controller : MonoBehaviour {
 	
 //------------------------
 	void Start () {
+		sceneInit = false;
 	}
 	void Awake() {
 		//keep the first heading value over scenes
@@ -109,10 +110,9 @@ public class Controller : MonoBehaviour {
 
 
 
-
 		//--------------------------calibrate----------------------------
 
-		if (clibrateMode) {
+		if (clibrateMode==true) {
 
 			if(text==null || animator==null || arrows==null || arrow==null 
 			   || ctrCube==null || innerScene==null || sceneHolder==null 
@@ -214,7 +214,7 @@ public class Controller : MonoBehaviour {
 				backGround.transform.rotation=Quaternion.Lerp( backGround.transform.rotation,Quaternion.Euler( new Vector3(pitch,heading,roll)), Time.deltaTime*4);
 
 				//get the four values
-				if(Input.GetButtonDown("X") || Input.GetMouseButtonDown(0)){
+				if(Input.GetButtonDown("Z")  || Input.GetMouseButtonDown(0)){
 					havingValue=true;
 				}
 				if(havingValue){
