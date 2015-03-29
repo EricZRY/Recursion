@@ -4,6 +4,7 @@ using System.Collections;
 public class characterCollid : MonoBehaviour {
 
 	public static bool flagOrientation=false;
+	public string toLoadScene;
 
 	// Use this for initialization
 	void Start () {
@@ -22,7 +23,7 @@ public class characterCollid : MonoBehaviour {
 		}
 
 		if(other.tag=="flag" && flagOrientation==true ){
-			Application.LoadLevel("Splash");
+			Application.LoadLevel(toLoadScene);
 		}
 	}
 
