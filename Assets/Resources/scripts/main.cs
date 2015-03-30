@@ -34,7 +34,7 @@ public class main : MonoBehaviour {
 
 	void Awake(){
 		sceneInit=false;
-
+		Controller.getFirstValue = false;
 		instance = this;
 
 		if (GameObject.Find ("Controller(Clone)") == null) {
@@ -128,9 +128,9 @@ public class main : MonoBehaviour {
 				//Debug.Log(Mathf.Abs( room.transform.rotation.eulerAngles.x-pit)+","+Mathf.Abs( room.transform.rotation.eulerAngles.y-hea)+","+Mathf.Abs( room.transform.rotation.eulerAngles.z-rol));
 			}
 
-
-			room.transform.rotation=Quaternion.Lerp( room.transform.rotation,Quaternion.Euler( new Vector3(pit,hea,rol)), Time.deltaTime*4);
-
+		if (Application.loadedLevelName != "level1") {
+						room.transform.rotation = Quaternion.Lerp (room.transform.rotation, Quaternion.Euler (new Vector3 (pit, hea, rol)), Time.deltaTime * 4);
+				}
 
 		
 
@@ -214,7 +214,7 @@ public class main : MonoBehaviour {
 			moving=false;
 		}
 
-		//Debug.Log (VRcamera.transform.rotation.eulerAngles.x);
+		Debug.Log (VRcamera.transform.rotation.eulerAngles.x);
 		if (Mathf.Abs (VRcamera.transform.rotation.eulerAngles.x) < 2.5f || Mathf.Abs (360-VRcamera.transform.rotation.eulerAngles.x)  < 2.5f) {
 			moving=true;
 		}

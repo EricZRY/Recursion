@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f156fc4501945604ba68899767763480
+guid: bcea7da7926b9714d9a0f9c870ec0c8f
 ModelImporter:
   serializedVersion: 16
   fileIDToRecycleName:
@@ -7,8 +7,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Trim_Text_rotatexthexcubextoxcheckxaround_1_2
-    4300002: Trim_Text_rotatexthexcubexhorizontallyxtoxcheckxaround_1_2
+    4300000: pCube1
     9500000: //RootNode
   materials:
     importMaterials: 1
