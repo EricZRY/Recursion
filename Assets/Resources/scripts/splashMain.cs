@@ -141,7 +141,7 @@ public class splashMain : MonoBehaviour {
 				loadObject("prefabs/bar","bar(Clone)", hit.collider.transform.position+ new Vector3(0,-1,0),Quaternion.identity);
 				
 				GameObject mask=GameObject.Find("mask");
-				GameObject selection=GameObject.Find("start");
+				GameObject selection=GameObject.Find("calibrate");
 				mask.transform.localScale*=0.9f;
 				selection.renderer.material.color= Color.Lerp(new Color32(88,99,96,255),new Color32(112,56,56,255),1-mask.transform.lossyScale.x);
 				
@@ -156,7 +156,7 @@ public class splashMain : MonoBehaviour {
 				loadObject("prefabs/bar","bar(Clone)", hit.collider.transform.position+ new Vector3(0,-1,0),Quaternion.identity);
 				
 				GameObject mask=GameObject.Find("mask");
-				GameObject selection=GameObject.Find("start");
+				GameObject selection=GameObject.Find("quit");
 				mask.transform.localScale*=0.9f;
 				selection.renderer.material.color= Color.Lerp(new Color32(88,99,96,255),new Color32(112,56,56,255),1-mask.transform.lossyScale.x);
 				

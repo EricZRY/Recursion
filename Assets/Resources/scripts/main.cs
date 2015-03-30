@@ -62,6 +62,9 @@ public class main : MonoBehaviour {
 		}
 		else if(mode == "ControllerVR"){
 
+			if(Input.GetButtonDown("X") || Input.GetButtonDown("Y") || Input.GetButtonDown("Z"))
+			Debug.Log(Input.GetButtonDown("X")+""+Input.GetButtonDown("Y")+""+Input.GetButtonDown("Z"));
+
 			if(sceneInit==true){
 				ControllerRot();
 			}
@@ -214,7 +217,7 @@ public class main : MonoBehaviour {
 			moving=false;
 		}
 
-		Debug.Log (VRcamera.transform.rotation.eulerAngles.x);
+		//Debug.Log (VRcamera.transform.rotation.eulerAngles.x);
 		if (Mathf.Abs (VRcamera.transform.rotation.eulerAngles.x) < 2.5f || Mathf.Abs (360-VRcamera.transform.rotation.eulerAngles.x)  < 2.5f) {
 			moving=true;
 		}

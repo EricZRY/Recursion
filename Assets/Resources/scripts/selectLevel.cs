@@ -86,11 +86,11 @@ public class selectLevel : MonoBehaviour {
 
 		if (moveRight==true) {
 			//text move right
-			holderPos+=Vector3.right*2;
+			holderPos-=Vector3.right*2;
 			moveRight=false;
 		}
 		else if(moveLeft==true){
-			holderPos-=Vector3.right*2;
+			holderPos+=Vector3.right*2;
 			moveLeft=false;
 		}
 

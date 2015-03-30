@@ -22,7 +22,7 @@ public class characterCollid : MonoBehaviour {
 			Application.LoadLevel(Application.loadedLevel);
 		}
 
-		Debug.Log("win");
+		//Debug.Log("win");
 
 
 		if(other.tag=="flag" && flagOrientation==true ){
