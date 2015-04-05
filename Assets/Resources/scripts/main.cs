@@ -49,7 +49,6 @@ public class main : MonoBehaviour {
 
 	}
 	
-	// Update is called once per frame
 	void Update () {
 //		if (Input.GetMouseButtonDown (0)) {
 //			Application.LoadLevel(Application.loadedLevel);
@@ -60,28 +59,28 @@ public class main : MonoBehaviour {
 		if(mode == "GamePad"){
 			//rotateSpace ();
 		}
+
 		else if(mode == "ControllerVR"){
 
-			if(Input.GetButtonDown("X") || Input.GetButtonDown("Y") || Input.GetButtonDown("Z"))
-			Debug.Log(Input.GetButtonDown("X")+""+Input.GetButtonDown("Y")+""+Input.GetButtonDown("Z"));
+//			if(Input.GetButtonDown("X") || Input.GetButtonDown("Y") || Input.GetButtonDown("Z"))
+//			Debug.Log(Input.GetButtonDown("X")+""+Input.GetButtonDown("Y")+""+Input.GetButtonDown("Z"));
 
 			if(sceneInit==true){
 				ControllerRot();
 			}
 			else{
-				if(Controller.getFirstValue==true){
+				if(Controller.getFirstValue==true && Mathf.Abs(Controller.pitch)!=90 &&
+				   (atNinties(Controller.pitch)==true && atNinties(Controller.heading)==true && atNinties(Controller.roll)==true)){
 				   if(Controller.pitch!=0 || Controller.heading!=0 || Controller.roll!=0 ){
 						room.transform.rotation=Quaternion.Euler(new Vector3(Controller.pitch,Controller.heading,Controller.roll));
 						//Debug.Log(new Vector3(Controller.pitch,Controller.heading,Controller.roll));
 						innerRoom.transform.rotation=Quaternion.Euler(0,0,0);
-					
 					}
 					sceneInit=true;
-
 				}
-				
 			}
 		}
+
 		else if(mode == "keyBoard"){
 			KeyBoardRot();
 		}
@@ -94,6 +93,7 @@ public class main : MonoBehaviour {
 //			block_level7.instance.moveBlock(BottomFace());
 //			stair_level7.instance.moveBlock(BottomFace());
 
+			Debug.Log(BottomFace());
 
 			if(BottomFace()==WinFace){
 				characterCollid.flagOrientation=true;
@@ -131,9 +131,13 @@ public class main : MonoBehaviour {
 				//Debug.Log(Mathf.Abs( room.transform.rotation.eulerAngles.x-pit)+","+Mathf.Abs( room.transform.rotation.eulerAngles.y-hea)+","+Mathf.Abs( room.transform.rotation.eulerAngles.z-rol));
 			}
 
+
+	
+
+
 		if (Application.loadedLevelName != "level1") {
-						room.transform.rotation = Quaternion.Lerp (room.transform.rotation, Quaternion.Euler (new Vector3 (pit, hea, rol)), Time.deltaTime * 4);
-				}
+			room.transform.rotation = Quaternion.Lerp (room.transform.rotation, Quaternion.Euler (new Vector3 (pit, hea, rol)), Time.deltaTime * 4);
+		}
 
 		
 
@@ -144,23 +148,27 @@ public class main : MonoBehaviour {
 
 		character.transform.rotation = Quaternion.Euler( 0,0,0);
 
+
 		Vector3 roomOrientation = room.transform.rotation.eulerAngles;
+
 		roomOrientation.x = StickToNinty (roomOrientation.x,2);
 		roomOrientation.y = StickToNinty (roomOrientation.y,2);
 		roomOrientation.z = StickToNinty (roomOrientation.z,2);
 		room.transform.rotation = Quaternion.Euler( roomOrientation);
 
-		if (atNinties(pit)==true && atNinties(hea)==true && atNinties(rol)==true
+
+
+		if ((atNinties(pit)==true && atNinties(hea)==true && atNinties(rol)==true
 		    && (atNinties(roomOrientation.x-pit) == true ) 
 		    && (atNinties( roomOrientation.y-hea) == true )
 		    && (atNinties(roomOrientation.z-rol) == true )
-		    ){
+		    )
+		    || Mathf.Abs( pit)==90 ){
 			rotating=false;
-
 		}
+
 		else {
 			rotating=true;
-
 		}
 
 //		Debug.Log (room.transform.rotation.x);
@@ -274,23 +282,25 @@ public class main : MonoBehaviour {
 		Ray downRay = new Ray(character.transform.position, -Vector3.up);
 		RaycastHit hit;
 
-		if (Physics.Raycast(downRay, out hit)) {
-			float hoverError =  -hoverHeight + hit.distance;
-			if(hoverError>=-0.1f && hoverError<=0.1f){
-				hoverError=0;
-			}
+		if (Physics.Raycast(downRay, out hit) ) {
+			if(hit.collider.tag!="flag"){
+				float hoverError =  -hoverHeight + hit.distance;
+				if(hoverError>=-0.1f && hoverError<=0.1f){
+					hoverError=0;
+				}
 
-			characterVel += -Vector3.up * hoverError*5f;
+				characterVel += -Vector3.up * hoverError*5f;
 
 
-			if(characterVel.y>=0){
-				characterVel.y=0;
-				character.transform.position += -Vector3.up *hoverError * 0.1f;
-				falling=false;
-			}
-			else{
-				character.transform.position += characterVel * 0.05f;
-				falling=true;
+				if(characterVel.y>=0){
+					characterVel.y=0;
+					character.transform.position += -Vector3.up *hoverError * 0.1f;
+					falling=false;
+				}
+				else{
+					character.transform.position += characterVel * 0.05f;
+					falling=true;
+				}
 			}
 		}
 	}

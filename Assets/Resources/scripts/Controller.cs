@@ -100,9 +100,15 @@ public class Controller : MonoBehaviour {
 //		pitch = pitch + pitchError;
 //		roll = roll + rollError;
 
-		heading = StickToNinty (heading, 25	);
-		pitch = StickToNinty (pitch, 20);
-		roll = StickToNinty (roll, 20);
+		if(StickToNinty (pitch, 20)==0){
+			pitch = StickToNinty (pitch, 20);
+			heading = StickToNinty (heading, 25);
+			roll = StickToNinty (roll, 20);
+			
+		}
+		else if(Mathf.Abs( StickToNinty (pitch, 20))==90){
+			pitch = StickToNinty (pitch, 20);
+		}
 		//Debug.Log (heading);
 
 
