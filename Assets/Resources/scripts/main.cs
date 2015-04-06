@@ -93,7 +93,7 @@ public class main : MonoBehaviour {
 //			block_level7.instance.moveBlock(BottomFace());
 //			stair_level7.instance.moveBlock(BottomFace());
 
-			Debug.Log(BottomFace());
+			//Debug.Log(BottomFace());
 
 			if(BottomFace()==WinFace){
 				characterCollid.flagOrientation=true;
