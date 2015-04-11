@@ -3,7 +3,7 @@ using System.Collections;
 
 public class block_level6 : MonoBehaviour {
 	private Vector3 state0=new Vector3(-0.1236f,0.0295f,0.15f);
-	private Vector3 state1=new Vector3(-0.05f,0.0295f,0.15f);
+	private Vector3 state1=new Vector3(-0.055f,0.0295f,0.15f);
 
 	private float vel=0;
 	public float state=0;
@@ -32,8 +32,8 @@ public class block_level6 : MonoBehaviour {
 
 	public  void moveBlock(string bottomFace){
 		if(state==0 || state==0.5f){
-			if(bottomFace=="RIGHT"){
-				if((transform.localPosition.x)<-0.05f){
+			if(bottomFace=="BACK"){
+				if((transform.localPosition.x)<-0.055f){
 					blockMovingAccel();
 					state=0.5f;
 				}
@@ -47,7 +47,7 @@ public class block_level6 : MonoBehaviour {
 		}
 		if(state==1 || state==0.5f){
 
-			if(bottomFace=="LEFT" ){
+			if(bottomFace=="FORWARD" ){
 				if((transform.localPosition.x)>-0.1236F){
 					blockMovingAccel();
 					state=0.5f;

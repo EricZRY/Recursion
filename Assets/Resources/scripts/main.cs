@@ -30,6 +30,10 @@ public class main : MonoBehaviour {
 
 	private string mode = "ControllerVR";
 
+	private AudioClip BGM;
+	
+	private bool audioPlay=true;
+
 	public static main instance { get; private set; }
 
 	void Awake(){
@@ -41,6 +45,13 @@ public class main : MonoBehaviour {
 			Instantiate(controller, new Vector3(0, 0, 0), Quaternion.identity) ;
 		}
 		forwardAim = GameObject.Find ("faim");
+
+		if(SoundManager.instance.secondBGM==false){
+			SoundManager.instance.BGMSource.Stop();
+			BGM=(AudioClip)Resources.Load("audio/bwv851");
+			SoundManager.instance.PlayBGM (BGM);
+			SoundManager.instance.secondBGM=true;
+		}
 	}
 
 	void Start () {
@@ -50,10 +61,10 @@ public class main : MonoBehaviour {
 	}
 	
 	void Update () {
-//		if (Input.GetMouseButtonDown (0)) {
-//			Application.LoadLevel(Application.loadedLevel);
-//
-//		}
+		if (Input.GetKeyDown(KeyCode.A)) {
+			Application.LoadLevel("intro");
+
+		}
 
 
 		if(mode == "GamePad"){
@@ -64,6 +75,8 @@ public class main : MonoBehaviour {
 
 //			if(Input.GetButtonDown("X") || Input.GetButtonDown("Y") || Input.GetButtonDown("Z"))
 //			Debug.Log(Input.GetButtonDown("X")+""+Input.GetButtonDown("Y")+""+Input.GetButtonDown("Z"));
+//			Debug.Log("f:"+falling+"    r:"+rotating);
+
 
 			if(sceneInit==true){
 				ControllerRot();
@@ -158,10 +171,9 @@ public class main : MonoBehaviour {
 
 
 
-		if ((atNinties(pit)==true && atNinties(hea)==true && atNinties(rol)==true
-		    && (atNinties(roomOrientation.x-pit) == true ) 
-		    && (atNinties( roomOrientation.y-hea) == true )
-		    && (atNinties(roomOrientation.z-rol) == true )
+		if (( (atNinties(roomOrientation.x) == true ) 
+		    && (atNinties( roomOrientation.y) == true )
+		    && (atNinties(roomOrientation.z) == true )
 		    )
 		    || Mathf.Abs( pit)==90 ){
 			rotating=false;
@@ -283,16 +295,25 @@ public class main : MonoBehaviour {
 		RaycastHit hit;
 
 		if (Physics.Raycast(downRay, out hit) ) {
-			if(hit.collider.tag!="flag"){
+
+			if(hit.collider.tag!="flag" && hit.collider.gameObject!=character){
+
 				float hoverError =  -hoverHeight + hit.distance;
 				if(hoverError>=-0.1f && hoverError<=0.1f){
 					hoverError=0;
+					audioPlay=true;
 				}
 
 				characterVel += -Vector3.up * hoverError*5f;
 
 
 				if(characterVel.y>=0){
+
+					if(audioPlay==true){
+						SoundManager.instance.PlaySingle(SoundManager.instance.fall);
+						audioPlay=false;
+					}
+
 					characterVel.y=0;
 					character.transform.position += -Vector3.up *hoverError * 0.1f;
 					falling=false;

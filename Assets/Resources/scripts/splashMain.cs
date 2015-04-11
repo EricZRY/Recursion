@@ -15,6 +15,11 @@ public class splashMain : MonoBehaviour {
 	private GameObject VRcamera;
 	private GameObject[] subMenus=new GameObject[9];
 
+	private AudioClip splashBGM;
+
+	private bool audioPlay=true;
+
+	
 	void Awake(){
 
 		menu=GameObject.Find("MENU");
@@ -28,6 +33,11 @@ public class splashMain : MonoBehaviour {
 
 		loadObject ("prefabs/Controller","Controller(Clone)", new Vector3(0, 0, 0), Quaternion.identity);
 
+		SoundManager.instance.BGMSource.Stop();
+		SoundManager.instance.secondBGM=false;
+		splashBGM=(AudioClip)Resources.Load("audio/bwv846");
+		SoundManager.instance.PlayBGM (splashBGM);
+
 		
 	}
 
@@ -37,94 +47,100 @@ public class splashMain : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//I know this is a bad idea, but I'm really not good at Math
-		transform.rotation = Quaternion.Euler (StickToNinty( Controller.pitch,45),StickToNinty( Controller.heading,45),StickToNinty( Controller.roll,45));
-		//Debug.Log (transform.rotation.eulerAngles);
-		//Debug.Log(Controller.pitch+";;"+Controller.heading+";;"+Controller.roll);
+//		//I know this is a bad idea, but I'm really not good at Math
+//		transform.rotation = Quaternion.Euler (StickToNinty( Controller.pitch,45),StickToNinty( Controller.heading,45),StickToNinty( Controller.roll,45));
+//		//Debug.Log (transform.rotation.eulerAngles);
+//		//Debug.Log(Controller.pitch+";;"+Controller.heading+";;"+Controller.roll);
+//
+//		//rotate along x axis to select
+//		if (transform.TransformDirection (Vector3.right)==new Vector3(1,0,0) ){
+//			if(Controller.roll==0){
+//				moveMenu(Controller.pitch);
+//			}
+//			else if(Controller.roll==-180){
+//				moveMenu(-Controller.pitch);
+//
+//			}
+//		}
+//		//rotate along -x axis to select
+//		else if(transform.TransformDirection (Vector3.left)==new Vector3(1,0,0)){
+//			if(Controller.roll==0){
+//				moveMenu(-Controller.pitch);
+//			}
+//			else if(Controller.roll==180){
+//				moveMenu(Controller.pitch);
+//				
+//			}
+//		}
+//		//rotate along z axis to select
+//		else if(transform.TransformDirection(Vector3.forward)==new Vector3(1,0,0)){
+//			moveMenu(Controller.roll);
+//
+//		}
+//		//rotate along -z axis to select
+//		else if(transform.TransformDirection(Vector3.back)==new Vector3(1,0,0)){
+//			moveMenu(-Controller.roll);
+//
+//		}
+//		//rotate along y axis to select
+//		else if(transform.TransformDirection(Vector3.up)==new Vector3(1,0,0)){
+//			moveMenu(Controller.heading);
+//
+//		}
+//		//rotate along -y axis to select
+//		else if(transform.TransformDirection(Vector3.down)==new Vector3(1,0,0)){
+//			moveMenu(-Controller.heading);
+//
+//		}
+//		else{
+//			gotFirstValue=false;
+//		}
 
-		//rotate along x axis to select
-		if (transform.TransformDirection (Vector3.right)==new Vector3(1,0,0) ){
-			if(Controller.roll==0){
-				moveMenu(Controller.pitch);
-			}
-			else if(Controller.roll==-180){
-				moveMenu(-Controller.pitch);
 
-			}
-		}
-		//rotate along -x axis to select
-		else if(transform.TransformDirection (Vector3.left)==new Vector3(1,0,0)){
-			if(Controller.roll==0){
-				moveMenu(-Controller.pitch);
-			}
-			else if(Controller.roll==180){
-				moveMenu(Controller.pitch);
-				
-			}
-		}
-		//rotate along z axis to select
-		else if(transform.TransformDirection(Vector3.forward)==new Vector3(1,0,0)){
-			moveMenu(Controller.roll);
-
-		}
-		//rotate along -z axis to select
-		else if(transform.TransformDirection(Vector3.back)==new Vector3(1,0,0)){
-			moveMenu(-Controller.roll);
-
-		}
-		//rotate along y axis to select
-		else if(transform.TransformDirection(Vector3.up)==new Vector3(1,0,0)){
-			moveMenu(Controller.heading);
-
-		}
-		//rotate along -y axis to select
-		else if(transform.TransformDirection(Vector3.down)==new Vector3(1,0,0)){
-			moveMenu(-Controller.heading);
-
-		}
-		else{
-			gotFirstValue=false;
-		}
-
-
-
-		for (int i=0;i<9;i++){
-			if(i==0 || (i>=4 && i<=8)){ 
-				if(subMenus[i].transform.position.z>=20){
-					subMenus[i].transform.position=new Vector3(0,0.23f,-25);
-				}
-				else if(subMenus[i].transform.position.z<=-30){
-					subMenus[i].transform.position=new Vector3(0,0.23f,15);
-				}
-				else if(subMenus[i].transform.position.z>=-5 && subMenus[i].transform.position.z<0){
-					subMenus[i].transform.position=new Vector3(0,0.23f,10);
-				}
-				else if(subMenus[i].transform.position.z<=5 && subMenus[i].transform.position.z>0){
-					subMenus[i].transform.position=new Vector3(0,0.23f,-10);
-				}
-			}
-
-			else{
-				if(subMenus[i].transform.position.z>=10){
-					subMenus[i].transform.position=new Vector3(0,0.23f,-5);
-				}
-				else if(subMenus[i].transform.position.z<=-10){
-					subMenus[i].transform.position=new Vector3(0,0.23f,5);
-				}
-			}
-		}
-
+//
+//		for (int i=0;i<9;i++){
+//			if(i==0 || (i>=4 && i<=8)){ 
+//				if(subMenus[i].transform.position.z>=20){
+//					subMenus[i].transform.position=new Vector3(0,0.23f,-25);
+//				}
+//				else if(subMenus[i].transform.position.z<=-30){
+//					subMenus[i].transform.position=new Vector3(0,0.23f,15);
+//				}
+//				else if(subMenus[i].transform.position.z>=-5 && subMenus[i].transform.position.z<0){
+//					subMenus[i].transform.position=new Vector3(0,0.23f,10);
+//				}
+//				else if(subMenus[i].transform.position.z<=5 && subMenus[i].transform.position.z>0){
+//					subMenus[i].transform.position=new Vector3(0,0.23f,-10);
+//				}
+//			}
+//
+//			else{
+//				if(subMenus[i].transform.position.z>=10){
+//					subMenus[i].transform.position=new Vector3(0,0.23f,-5);
+//				}
+//				else if(subMenus[i].transform.position.z<=-10){
+//					subMenus[i].transform.position=new Vector3(0,0.23f,5);
+//				}
+//			}
+//		}
+//
 
 
 		RaycastHit hit;
 		if (Physics.Raycast(VRcamera.transform.position, VRcamera.transform.TransformDirection(Vector3.forward),out hit,10)){
 			if(subMenus[3].transform.position.z==0 && hit.collider.gameObject.name=="start"){
+				if(audioPlay==true){
+					SoundManager.instance.PlaySingle(SoundManager.instance.smallHighlight);
+					audioPlay=false;
+				}
+
+
 				//Debug.Log("load select level scene");
 				loadObject("prefabs/bar","bar(Clone)", hit.collider.transform.position+ new Vector3(0,-1,0),Quaternion.identity);
 
 				GameObject mask=GameObject.Find("mask");
 				GameObject selection=GameObject.Find("start");
-				mask.transform.localScale*=0.9f;
+				mask.transform.localScale*=0.8f;
 				selection.renderer.material.color= Color.Lerp(new Color32(88,99,96,255),new Color32(112,56,56,255),1-mask.transform.lossyScale.x);
 
 				if(mask.transform.localScale.x<0.1f){
@@ -133,26 +149,35 @@ public class splashMain : MonoBehaviour {
 //						Application.LoadLevel("clibrate");
 //					}
 //					else{
+					SoundManager.instance.PlaySingle(SoundManager.instance.select);
+
 						Application.LoadLevel("selectLevel");
 //					}
 				}
 			}
 			else if(subMenus[2].transform.position.z==0 && hit.collider.gameObject.name=="calibrate"){
-				loadObject("prefabs/bar","bar(Clone)", hit.collider.transform.position+ new Vector3(0,-1,0),Quaternion.identity);
-				
-				GameObject mask=GameObject.Find("mask");
-				GameObject selection=GameObject.Find("calibrate");
-				mask.transform.localScale*=0.9f;
-				selection.renderer.material.color= Color.Lerp(new Color32(88,99,96,255),new Color32(112,56,56,255),1-mask.transform.lossyScale.x);
-				
-				if(mask.transform.lossyScale.x<0.1f){
-					Controller.clibrateMode=true;
-
-						Application.LoadLevel("clibrate");
-				}
+//				loadObject("prefabs/bar","bar(Clone)", hit.collider.transform.position+ new Vector3(0,-1,0),Quaternion.identity);
+//				
+//				GameObject mask=GameObject.Find("mask");
+//				GameObject selection=GameObject.Find("calibrate");
+//				mask.transform.localScale*=0.9f;
+//				selection.renderer.material.color= Color.Lerp(new Color32(88,99,96,255),new Color32(112,56,56,255),1-mask.transform.lossyScale.x);
+//				
+//				if(mask.transform.lossyScale.x<0.1f){
+//					Controller.clibrateMode=true;
+//
+//						Application.LoadLevel("clibrate");
+//				}
 			}
-			else if(subMenus[1].transform.position.z==0 && hit.collider.gameObject.name=="quit"){
+			//else if(subMenus[1].transform.position.z==0 && hit.collider.gameObject.name=="quit"){
+
+			else if(subMenus[3].transform.position.z==0 && hit.collider.gameObject.name=="quit"){
 				//Debug.Log("load select level scene");
+				if(audioPlay==true){
+					SoundManager.instance.PlaySingle(SoundManager.instance.smallHighlight);
+					audioPlay=false;
+				}
+
 				loadObject("prefabs/bar","bar(Clone)", hit.collider.transform.position+ new Vector3(0,-1,0),Quaternion.identity);
 				
 				GameObject mask=GameObject.Find("mask");
@@ -166,9 +191,10 @@ public class splashMain : MonoBehaviour {
 			}
 		}
 		else{
+			audioPlay=true;
 			Destroy(GameObject.Find("bar(Clone)"));
 			GameObject.Find("start").renderer.material.color=new Color32(88,99,96,255);
-			GameObject.Find("calibrate").renderer.material.color=new Color32(88,99,96,255);
+			//GameObject.Find("calibrate").renderer.material.color=new Color32(88,99,96,255);
 			GameObject.Find("quit").renderer.material.color=new Color32(88,99,96,255);
 		}
 
