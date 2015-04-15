@@ -47,6 +47,7 @@ public class Controller : MonoBehaviour {
 
 	public float[] defaultCalibrateValue= new float[4];
 
+	public static Controller instance = null;     //Allows other scripts to call functions from SoundManager.             
 
 	
 //------------------------
@@ -55,7 +56,17 @@ public class Controller : MonoBehaviour {
 	}
 	void Awake() {
 		//keep the first heading value over scenes
-		DontDestroyOnLoad(transform.gameObject);
+		//Check if there is already an instance of SoundManager
+		if (instance == null)
+			//if not, set it to this.
+			instance = this;
+		//If instance already exists:
+		else if (instance != this)
+			//Destroy this, this enforces our singleton pattern so there can only be one instance of SoundManager.
+			Destroy (gameObject);
+		
+		//Set SoundManager to DontDestroyOnLoad so that it won't be destroyed when reloading our scene.
+		DontDestroyOnLoad (gameObject);
 	}
 
 	void Update () {

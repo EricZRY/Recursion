@@ -2,10 +2,10 @@
 using System.Collections;
 
 public class main : MonoBehaviour {
-	public GameObject character;
+	private GameObject character;
 	public GameObject room;
 	public GameObject innerRoom;
-	public GameObject VRcamera;
+	private GameObject VRcamera;
 
 	public string WinFace;
 
@@ -37,21 +37,33 @@ public class main : MonoBehaviour {
 	public static main instance { get; private set; }
 
 	void Awake(){
-		sceneInit=false;
-		Controller.getFirstValue = false;
-		instance = this;
 
 		if (GameObject.Find ("Controller(Clone)") == null) {
 			Instantiate(controller, new Vector3(0, 0, 0), Quaternion.identity) ;
 		}
-		forwardAim = GameObject.Find ("faim");
 
-		if(SoundManager.instance.secondBGM==false){
-			SoundManager.instance.BGMSource.Stop();
-			BGM=(AudioClip)Resources.Load("audio/bwv851");
-			SoundManager.instance.PlayBGM (BGM);
-			SoundManager.instance.secondBGM=true;
+		if (GameObject.Find ("faim(Clone)") == null) {
+			forwardAim=Instantiate(Resources.Load("prefabs/faim"), new Vector3(0, 0, 0), Quaternion.identity)as GameObject ;
 		}
+
+		character = GameObject.Find ("OVRPlayerController");
+		VRcamera = GameObject.Find ("CenterEyeAnchor");
+
+		character.transform.parent = innerRoom.transform;
+		forwardAim.transform.parent = GameObject.Find ("OVRCameraRig").transform;
+
+		if(SoundManager.instance!=null){
+			if(SoundManager.instance.secondBGM==false){
+				SoundManager.instance.BGMSource.Stop();
+				BGM=(AudioClip)Resources.Load("audio/bwv851");
+				SoundManager.instance.PlayBGM (BGM);
+				SoundManager.instance.secondBGM=true;
+			}		
+		}
+		sceneInit=false;
+		Controller.getFirstValue = false;
+		instance = this;
+
 	}
 
 	void Start () {
@@ -151,6 +163,7 @@ public class main : MonoBehaviour {
 		if (Application.loadedLevelName != "level1") {
 			room.transform.rotation = Quaternion.Lerp (room.transform.rotation, Quaternion.Euler (new Vector3 (pit, hea, rol)), Time.deltaTime * 4);
 		}
+
 
 		
 
@@ -309,7 +322,7 @@ public class main : MonoBehaviour {
 
 				if(characterVel.y>=0){
 
-					if(audioPlay==true){
+					if(audioPlay==true && SoundManager.instance!=null){
 						SoundManager.instance.PlaySingle(SoundManager.instance.fall);
 						audioPlay=false;
 					}
