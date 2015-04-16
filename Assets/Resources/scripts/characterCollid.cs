@@ -44,6 +44,12 @@ public class characterCollid : MonoBehaviour {
 
 		}
 		else if (Application.loadedLevelName == "level6" && toLoadScene!="level7") {
+			gameObject.transform.position=new Vector3(1.3f,-3.21f,-8.94f);
+			
+			toLoadScene="level7";
+			
+		}
+		else if (Application.loadedLevelName == "level6" && toLoadScene!="level7") {
 			gameObject.transform.position=new Vector3(-3.6f,-5.86f,-4.79f);
 
 			toLoadScene="level7";

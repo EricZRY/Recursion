@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using TMPro;
 
 public class selectLevel : MonoBehaviour {
 	private GameObject VRcamera;
-	private GameObject[] levels=new GameObject[7];
+	private GameObject[] levels=new GameObject[8];
 	private GameObject levelHolder;
 
 	private Vector3 holderPos=new Vector3(0,0,0);
@@ -39,8 +40,10 @@ public class selectLevel : MonoBehaviour {
 		if (Physics.Raycast (VRcamera.transform.position, VRcamera.transform.TransformDirection (Vector3.forward), out hit)) {
 			if(hit.collider.gameObject==GameObject.Find("right") && moved ==false){
 				if(audioPlay==true){
+					if(SoundManager.instance!=null){
 					SoundManager.instance.PlaySingle(SoundManager.instance.highlight);
 					audioPlay=false;
+					}
 				}
 
 				moveRight=true;
@@ -49,8 +52,11 @@ public class selectLevel : MonoBehaviour {
 			}
 			else if(hit.collider.gameObject==GameObject.Find("left")&& moved ==false){
 				if(audioPlay==true){
+					if(SoundManager.instance!=null){
+
 					SoundManager.instance.PlaySingle(SoundManager.instance.highlight);
 					audioPlay=false;
+					}
 				}
 
 				moveLeft=true;
@@ -66,8 +72,11 @@ public class selectLevel : MonoBehaviour {
 					if(levels[i].transform.position.x>-1 && levels[i].transform.position.x<1){
 
 						if(audioPlay==true){
+							if(SoundManager.instance!=null){
+
 							SoundManager.instance.PlaySingle(SoundManager.instance.smallHighlight);
 							audioPlay=false;
+							}
 						}
 
 						if(GameObject.Find("bar(Clone)")==null){
@@ -79,9 +88,11 @@ public class selectLevel : MonoBehaviour {
 							mask.transform.localScale*=0.9f;
 
 							if(mask.transform.localScale.x<0.05f){
+								if(SoundManager.instance!=null){
+
 								SoundManager.instance.BGMSource.Stop();
 								SoundManager.instance.PlaySingle(SoundManager.instance.select);
-
+								}
 									Application.LoadLevel("level"+(i+1));
 
 							}
@@ -123,6 +134,11 @@ public class selectLevel : MonoBehaviour {
 				levels[i].transform.position=new Vector3(-4+error,0,0);
 			}
 
+			if(levels[i].transform.position.x<-2  || levels[i].transform.position.x>2){
+				levels[i].transform.GetChild(0).gameObject.GetComponent<TextMeshPro>().faceColor =
+					Color.Lerp(new Color32(60,54,59,255),new Color32(60,54,59,0), Mathf.Abs(levels[i].transform.position.x)-2);
+			}
+
 			if(levels[i].transform.position.x>-2 && levels[i].transform.position.x<2){
 				if(MaxDepth!=i && levels[i].transform.position.x>-1 && levels[i].transform.position.x<1){
 				
@@ -135,8 +151,8 @@ public class selectLevel : MonoBehaviour {
 
 
 				}
-				levels[i].transform.GetChild(0).gameObject.renderer.material.color=
-					Color.Lerp(new Color32(136,136,136,255),new Color32(60,54,59,255), Mathf.Abs(levels[i].transform.position.x)/2);
+				levels[i].transform.GetChild(0).gameObject.GetComponent<TextMeshPro>().faceColor =
+					Color.Lerp(new Color32(196,196,196,255),new Color32(60,54,59,255), Mathf.Abs(levels[i].transform.position.x)/2);
 			}
 		}
 		levelHolder.transform.position=Vector3.Lerp(levelHolder.transform.position,holderPos,Time.deltaTime*4 );
