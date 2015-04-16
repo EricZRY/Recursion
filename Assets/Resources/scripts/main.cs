@@ -34,6 +34,7 @@ public class main : MonoBehaviour {
 	
 	private bool audioPlay=true;
 
+
 	public static main instance { get; private set; }
 
 	void Awake(){
@@ -42,15 +43,52 @@ public class main : MonoBehaviour {
 			Instantiate(controller, new Vector3(0, 0, 0), Quaternion.identity) ;
 		}
 
-		if (GameObject.Find ("faim(Clone)") == null) {
-			forwardAim=Instantiate(Resources.Load("prefabs/faim"), new Vector3(0, 0, 0), Quaternion.identity)as GameObject ;
+		if(GameObject.Find ("OVRPlayerController")==null){
+			character = Instantiate(Resources.Load("prefabs/OVRPlayerController 2"), new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+			character.name="OVRPlayerController";
+			VRcamera = GameObject.Find ("CenterEyeAnchor");
+
+		}
+		else{
+			character = GameObject.Find ("OVRPlayerController");
+			VRcamera = GameObject.Find ("CenterEyeAnchor");
+
 		}
 
-		character = GameObject.Find ("OVRPlayerController");
-		VRcamera = GameObject.Find ("CenterEyeAnchor");
+		if(character.transform.parent != innerRoom.transform){
+			character.transform.parent = innerRoom.transform;
+		}
+		
+		if (Application.loadedLevelName == "level1") {
+			GameObject hint = Instantiate (Resources.Load ("prefabs/level1hint"), Vector3.zero, Quaternion.identity)as GameObject;
+			hint.name="level1hint";
+			hint.transform.parent=GameObject.Find("faim").transform;
+			hint.transform.localScale=new Vector3(4.16f,4.16f,4.16f);
+			hint.transform.localPosition= new Vector3(0,0.238f,3.48f);
+			hint.transform.localRotation=Quaternion.Euler( Vector3.zero);
+		}
+		else if(Application.loadedLevelName == "level2"){
+			if(GameObject.Find("level1hint")!=null){
+				Destroy(GameObject.Find("level1hint"));
+			}
+			GameObject hint = Instantiate (Resources.Load ("prefabs/level2hint"), Vector3.zero, Quaternion.identity)as GameObject;
+			hint.name="level2hint";
+			hint.transform.parent=GameObject.Find("faim").transform;
+			hint.transform.localScale=new Vector3(4.16f,4.16f,4.16f);
+			hint.transform.localPosition= new Vector3(0,0.238f,3.48f);
+			hint.transform.localRotation=Quaternion.Euler( Vector3.zero);
 
-		character.transform.parent = innerRoom.transform;
-		forwardAim.transform.parent = GameObject.Find ("OVRCameraRig").transform;
+		}
+		else{
+			if(GameObject.Find("level1hint")!=null){
+				Destroy(GameObject.Find("level1hint"));
+			}
+			if(GameObject.Find("level2hint")!=null){
+				Destroy(GameObject.Find("level2hint"));
+			}
+		}
+
+
 
 		if(SoundManager.instance!=null){
 			if(SoundManager.instance.secondBGM==false){
@@ -60,12 +98,14 @@ public class main : MonoBehaviour {
 				SoundManager.instance.secondBGM=true;
 			}		
 		}
+
+
 		sceneInit=false;
 		Controller.getFirstValue = false;
 		instance = this;
 
 	}
-
+	
 	void Start () {
 		rotating = false;
 		rotAngle = 0;
@@ -73,9 +113,19 @@ public class main : MonoBehaviour {
 	}
 	
 	void Update () {
-		if (Input.GetKeyDown(KeyCode.A)) {
-			Application.LoadLevel("intro");
+//		if(VRcamera.transform.rotation.eulerAngles!=Vector3.zero){
+//			if(character.transform.parent != innerRoom.transform.GetChild(0)){
+//				character.transform.parent = innerRoom.transform.GetChild(0);
+//			}
+//		}
 
+
+	
+		if (Input.GetKeyDown(KeyCode.A)) {
+			//Application.LoadLevel("intro");
+			if(character.transform.parent != innerRoom.transform.GetChild(0)){
+				character.transform.parent = innerRoom.transform.GetChild(0);
+			}
 		}
 
 
@@ -92,6 +142,7 @@ public class main : MonoBehaviour {
 
 			if(sceneInit==true){
 				ControllerRot();
+
 			}
 			else{
 				if(Controller.getFirstValue==true && Mathf.Abs(Controller.pitch)!=90 &&
@@ -101,6 +152,7 @@ public class main : MonoBehaviour {
 						//Debug.Log(new Vector3(Controller.pitch,Controller.heading,Controller.roll));
 						innerRoom.transform.rotation=Quaternion.Euler(0,0,0);
 					}
+
 					sceneInit=true;
 				}
 			}
@@ -165,7 +217,7 @@ public class main : MonoBehaviour {
 		}
 
 
-		
+		forwardAim = GameObject.Find ("faim");
 
 		forwardAim.transform.rotation =
 			Quaternion.Euler (0,VRcamera.transform.rotation.eulerAngles.y,transform.rotation.eulerAngles.z);
@@ -173,6 +225,7 @@ public class main : MonoBehaviour {
 
 
 		character.transform.rotation = Quaternion.Euler( 0,0,0);
+
 
 
 		Vector3 roomOrientation = room.transform.rotation.eulerAngles;
@@ -194,6 +247,7 @@ public class main : MonoBehaviour {
 
 		else {
 			rotating=true;
+
 		}
 
 //		Debug.Log (room.transform.rotation.x);
@@ -252,6 +306,7 @@ public class main : MonoBehaviour {
 
 		//Debug.Log (VRcamera.transform.rotation.eulerAngles.x);
 		if (Mathf.Abs (VRcamera.transform.rotation.eulerAngles.x) < 2.5f || Mathf.Abs (360-VRcamera.transform.rotation.eulerAngles.x)  < 2.5f) {
+
 			moving=true;
 		}
 		else {
@@ -262,20 +317,21 @@ public class main : MonoBehaviour {
 		//show aim
 		if(falling==false && rotating==false){
 			forwardAim.transform.GetChild(0).gameObject.renderer.material.color=Color.Lerp(forwardAim.transform.GetChild(0).gameObject.renderer.material.color,new Color32(0,255,128,98),Time.deltaTime*4);
-			if(GameObject.Find("level1hint")!=null){
-			forwardAim.transform.GetChild(1).gameObject.renderer.material.color=Color.Lerp(forwardAim.transform.GetChild(1).gameObject.renderer.material.color,new Color32(255,255,255,255),Time.deltaTime*4);
+			if(GameObject.Find("level2hint")!=null){
+				GameObject.Find("level2hint").renderer.material.color=Color.Lerp(forwardAim.transform.GetChild(1).gameObject.renderer.material.color,new Color32(255,255,255,255),Time.deltaTime*4);
 			}
 		}
 		else{
 			forwardAim.transform.GetChild(0).gameObject.renderer.material.color=Color.Lerp(forwardAim.transform.GetChild(0).gameObject.renderer.material.color,new Color32(0,255,128,0),Time.deltaTime*4);
 
-			if(GameObject.Find("level1hint")!=null){
-				GameObject.Find("level1hint").renderer.material.color=Color.Lerp(forwardAim.transform.GetChild(1).gameObject.renderer.material.color,new Color32(255,255,255,0),Time.deltaTime*4);
+			if(GameObject.Find("level2hint")!=null){
+				GameObject.Find("level2hint").renderer.material.color=Color.Lerp(forwardAim.transform.GetChild(1).gameObject.renderer.material.color,new Color32(255,255,255,0),Time.deltaTime*4);
 			}
 		}
 
 
 		if(moving==true && falling == false && rotating==false){
+
 
 			Vector3 fowardXZ= new Vector3(VRcamera.transform.TransformDirection(Vector3.forward).x,0,VRcamera.transform.TransformDirection(Vector3.forward).z);
 
@@ -329,6 +385,8 @@ public class main : MonoBehaviour {
 
 					characterVel.y=0;
 					character.transform.position += -Vector3.up *hoverError * 0.1f;
+
+
 					falling=false;
 				}
 				else{
@@ -352,6 +410,7 @@ public class main : MonoBehaviour {
 			characterVel.z = characterVel.z * times;
 		}
 	}
+
 
 
 
