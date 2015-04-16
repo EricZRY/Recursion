@@ -60,24 +60,37 @@ public class main : MonoBehaviour {
 		}
 		
 		if (Application.loadedLevelName == "level1") {
-			GameObject hint = Instantiate (Resources.Load ("prefabs/level1hint"), Vector3.zero, Quaternion.identity)as GameObject;
-			hint.name="level1hint";
-			hint.transform.parent=GameObject.Find("faim").transform;
-			hint.transform.localScale=new Vector3(4.16f,4.16f,4.16f);
-			hint.transform.localPosition= new Vector3(0,0.238f,3.48f);
-			hint.transform.localRotation=Quaternion.Euler( Vector3.zero);
+			if(GameObject.Find("level1hint")==null){
+				GameObject hint = Instantiate (Resources.Load ("prefabs/level1hint"), Vector3.zero, Quaternion.identity)as GameObject;
+				hint.name="level1hint";
+				hint.transform.parent=GameObject.Find("faim").transform;
+				hint.transform.localScale=new Vector3(4.16f,4.16f,4.16f);
+				hint.transform.localPosition= new Vector3(0,0.238f,3.48f);
+				hint.transform.localRotation=Quaternion.Euler( Vector3.zero);
+			}
+			if(GameObject.Find("horotcube")!=null){
+				Destroy(GameObject.Find("horotcube"));
+			}
 		}
 		else if(Application.loadedLevelName == "level2"){
 			if(GameObject.Find("level1hint")!=null){
 				Destroy(GameObject.Find("level1hint"));
 			}
-			GameObject hint = Instantiate (Resources.Load ("prefabs/level2hint"), Vector3.zero, Quaternion.identity)as GameObject;
-			hint.name="level2hint";
-			hint.transform.parent=GameObject.Find("faim").transform;
-			hint.transform.localScale=new Vector3(4.16f,4.16f,4.16f);
-			hint.transform.localPosition= new Vector3(0,0.238f,3.48f);
-			hint.transform.localRotation=Quaternion.Euler( Vector3.zero);
 
+			if(GameObject.Find("leve21hint")==null){
+				GameObject hint = Instantiate (Resources.Load ("prefabs/level2hint"), Vector3.zero, Quaternion.identity)as GameObject;
+				hint.name="level2hint";
+				hint.transform.parent=GameObject.Find("faim").transform;
+				hint.transform.localScale=new Vector3(4.16f,4.16f,4.16f);
+				hint.transform.localPosition= new Vector3(0,0.238f,3.48f);
+				hint.transform.localRotation=Quaternion.Euler( Vector3.zero);
+			}
+			if(GameObject.Find("horotcube")==null){
+				GameObject horotcube = Instantiate (Resources.Load ("prefabs/horotCube"), Vector3.zero, Quaternion.identity)as GameObject;
+				horotcube.name="horotcube";
+				horotcube.transform.parent=GameObject.Find("faim").transform;
+				horotcube.transform.localPosition= new Vector3(0,0.538f,3.48f);
+			}
 		}
 		else{
 			if(GameObject.Find("level1hint")!=null){
@@ -85,6 +98,9 @@ public class main : MonoBehaviour {
 			}
 			if(GameObject.Find("level2hint")!=null){
 				Destroy(GameObject.Find("level2hint"));
+			}
+			if(GameObject.Find("horotcube")!=null){
+				Destroy(GameObject.Find("horotcube"));
 			}
 		}
 
