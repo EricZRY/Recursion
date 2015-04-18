@@ -4,10 +4,78 @@ ModelImporter:
   serializedVersion: 16
   fileIDToRecycleName:
     100000: //RootNode
+    100002: group1
+    100004: group2
+    100006: pCube2
+    100008: pCube3
+    100010: pCube3 1
+    100012: pCube4
+    100014: pCube4 1
+    100016: pCube5
+    100018: pCube5 1
+    100020: pPipe1
+    100022: pPipe1 1
+    100024: pPipe2
+    100026: pPipe2 1
+    100028: pPipe3
+    100030: pPipe3 1
     400000: //RootNode
+    400002: group1
+    400004: group2
+    400006: pCube2
+    400008: pCube3
+    400010: pCube3 1
+    400012: pCube4
+    400014: pCube4 1
+    400016: pCube5
+    400018: pCube5 1
+    400020: pPipe1
+    400022: pPipe1 1
+    400024: pPipe2
+    400026: pPipe2 1
+    400028: pPipe3
+    400030: pPipe3 1
     2300000: //RootNode
+    2300002: pCube2
+    2300004: pCube3
+    2300006: pCube3 1
+    2300008: pCube4
+    2300010: pCube4 1
+    2300012: pCube5
+    2300014: pCube5 1
+    2300016: pPipe1
+    2300018: pPipe1 1
+    2300020: pPipe2
+    2300022: pPipe2 1
+    2300024: pPipe3
+    2300026: pPipe3 1
     3300000: //RootNode
+    3300002: pCube2
+    3300004: pCube3
+    3300006: pCube3 1
+    3300008: pCube4
+    3300010: pCube4 1
+    3300012: pCube5
+    3300014: pCube5 1
+    3300016: pPipe1
+    3300018: pPipe1 1
+    3300020: pPipe2
+    3300022: pPipe2 1
+    3300024: pPipe3
+    3300026: pPipe3 1
     4300000: pCube2
+    4300002: pCube5
+    4300004: pCube4
+    4300006: pCube3
+    4300008: pPipe1
+    4300010: pPipe2
+    4300012: pPipe3
+    4300014: pCube5
+    4300016: pCube4
+    4300018: pCube3
+    4300020: pPipe1
+    4300022: pPipe2
+    4300024: pPipe3
     9500000: //RootNode
   materials:
     importMaterials: 1
