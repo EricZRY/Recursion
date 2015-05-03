@@ -5,7 +5,7 @@ using TMPro;
 
 public class Controller : MonoBehaviour {
 	public static bool clibrateMode = false;
-	public static string controlMode = "gamepad";
+	public static string controlMode = "notselected";
 
 	private float firstHeading=0;
 	private bool sceneInit=false;
