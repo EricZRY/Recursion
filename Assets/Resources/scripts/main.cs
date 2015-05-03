@@ -2,10 +2,10 @@
 using System.Collections;
 
 public class main : MonoBehaviour {
-	private GameObject character;
+	public GameObject character;
 	public GameObject room;
 	public GameObject innerRoom;
-	private GameObject VRcamera;
+	public GameObject VRcamera;
 
 	public string WinFace;
 
@@ -23,6 +23,14 @@ public class main : MonoBehaviour {
 	private float hea = 0;
 	private float rol = 0;
 
+	//--------gamepad rotating---------//
+	private bool down = false;
+	private bool right = false;
+	private bool left = false;
+	private bool up = false;
+	private bool forward = false;
+	private bool back = false;
+	//---------------------------------//
 
 	private Vector3 characterVel = new Vector3(0f,0f,0f);
 
@@ -93,6 +101,7 @@ public class main : MonoBehaviour {
 			}
 		}
 		else{
+		//-------------delete hints-------------------------//
 			if(GameObject.Find("level1hint")!=null){
 				Destroy(GameObject.Find("level1hint"));
 			}
@@ -102,6 +111,7 @@ public class main : MonoBehaviour {
 			if(GameObject.Find("horotcube")!=null){
 				Destroy(GameObject.Find("horotcube"));
 			}
+		//---------------------------------------------------//
 		}
 
 
@@ -123,30 +133,23 @@ public class main : MonoBehaviour {
 	}
 	
 	void Start () {
+		forwardAim = GameObject.Find ("faim");
 		rotating = false;
 		rotAngle = 0;
-
+		if (Controller.controlMode == "cubic") {
+			mode = "ControllerVR";
+		}
+		else if(Controller.controlMode == "gamepad"){
+			mode = "GamePad";
+		}
 	}
 	
 	void Update () {
-//		if(VRcamera.transform.rotation.eulerAngles!=Vector3.zero){
-//			if(character.transform.parent != innerRoom.transform.GetChild(0)){
-//				character.transform.parent = innerRoom.transform.GetChild(0);
-//			}
-//		}
 
-
-	
-		if (Input.GetKeyDown(KeyCode.A)) {
-			//Application.LoadLevel("intro");
-			if(character.transform.parent != innerRoom.transform.GetChild(0)){
-				character.transform.parent = innerRoom.transform.GetChild(0);
-			}
-		}
 
 
 		if(mode == "GamePad"){
-			//rotateSpace ();
+			rotateSpace ();
 		}
 
 		else if(mode == "ControllerVR"){
@@ -233,7 +236,6 @@ public class main : MonoBehaviour {
 		}
 
 
-		forwardAim = GameObject.Find ("faim");
 
 		forwardAim.transform.rotation =
 			Quaternion.Euler (0,VRcamera.transform.rotation.eulerAngles.y,transform.rotation.eulerAngles.z);
@@ -275,8 +277,6 @@ public class main : MonoBehaviour {
 			velMax(7f,0.03f);
 			characterHover(2.2f);
 			characterMove();
-
-			//Debug.Log(characterVel);
 		}
 	}
 
@@ -479,117 +479,154 @@ public class main : MonoBehaviour {
 	}
 
 
-//	void rotateSpace (){
-//						if (Input.GetButton ("Fire2") && rotating == false) {
-//								rotating = true;
-//					
-//								down = false;
-//								right = false;
-//								left = false;
-//								up = false;
-//								forward = true;
-//								back = false;
-//								//			Physics.gravity = new Vector3(-1.0F, 0, 0);
-//								//			Vector3 currentRot=new Vector3(character.transform.rotation.eulerAngles.x,character.transform.rotation.eulerAngles.y,character.transform.rotation.eulerAngles.z);
-//								//			character.transform.rotation=Quaternion.Euler(new Vector3(currentRot.x,currentRot.y,-90));
-//						}
-//						if (forward == true) {
-//								if (rotAngle <= 90 && rotating == true) {
-//										rotAngle++;
-//										room.transform.RotateAround (character.transform.position, Vector3.forward, 1);
-//								}
-//								if (rotAngle > 90) {
-//										rotating = false;
-//							
-//										rotAngle = 0;
-//								}
-//						
-//						}
-//
-//
-//
-//						if (Input.GetButton ("Fire3") && rotating == false) {
-//							rotating = true;
-//							
-//							down = false;
-//							right = false;
-//							left = false;
-//							up = false;
-//							forward = false;
-//							back = true;
-//							//			Physics.gravity = new Vector3(-1.0F, 0, 0);
-//							//			Vector3 currentRot=new Vector3(character.transform.rotation.eulerAngles.x,character.transform.rotation.eulerAngles.y,character.transform.rotation.eulerAngles.z);
-//							//			character.transform.rotation=Quaternion.Euler(new Vector3(currentRot.x,currentRot.y,-90));
-//						}
-//						if (back == true) {
-//							if (rotAngle <= 90 && rotating == true) {
-//								rotAngle++;
-//								room.transform.RotateAround (character.transform.position, Vector3.back, 1);
-//							}
-//							if (rotAngle > 90) {
-//								rotating = false;
-//								
-//								rotAngle = 0;
-//							}
-//							
-//						}
-//						
-//
-//
-//
-//						if (Input.GetButton ("Jump") && rotating == false) {
-//							rotating = true;
-//							
-//							down = false;
-//							right = false;
-//							left = true;
-//							up = false;
-//							forward = false;
-//							back = false;
-//							//			Physics.gravity = new Vector3(-1.0F, 0, 0);
-//							//			Vector3 currentRot=new Vector3(character.transform.rotation.eulerAngles.x,character.transform.rotation.eulerAngles.y,character.transform.rotation.eulerAngles.z);
-//							//			character.transform.rotation=Quaternion.Euler(new Vector3(currentRot.x,currentRot.y,-90));
-//						}
-//						if (left == true) {
-//							if (rotAngle <= 90 && rotating == true) {
-//								rotAngle++;
-//								room.transform.RotateAround (character.transform.position, Vector3.left, 1);
-//							}
-//							if (rotAngle > 90) {
-//								rotating = false;
-//								
-//								rotAngle = 0;
-//							}
-//							
-//						}
-//
-//
-//
-//						if (Input.GetButton ("Fire1") && rotating == false) {
-//							rotating = true;
-//							
-//							down = false;
-//							right = true;
-//							left = false;
-//							up = false;
-//							forward = false;
-//							back = false;
-//							//			Physics.gravity = new Vector3(-1.0F, 0, 0);
-//							//			Vector3 currentRot=new Vector3(character.transform.rotation.eulerAngles.x,character.transform.rotation.eulerAngles.y,character.transform.rotation.eulerAngles.z);
-//							//			character.transform.rotation=Quaternion.Euler(new Vector3(currentRot.x,currentRot.y,-90));
-//						}
-//						if (right == true) {
-//							if (rotAngle <= 90 && rotating == true) {
-//								rotAngle++;
-//								room.transform.RotateAround (character.transform.position, Vector3.right, 1);
-//							}
-//							if (rotAngle > 90) {
-//								rotating = false;
-//								
-//								rotAngle = 0;
-//							}
-//							
-//						}
-//				
-//	}
+	void rotateSpace (){
+		//Debug.Log (BottomFace());
+		character.transform.rotation = Quaternion.Euler( 0,0,0);
+		forwardAim.transform.rotation =
+			Quaternion.Euler (0,VRcamera.transform.rotation.eulerAngles.y,transform.rotation.eulerAngles.z);
+
+		int rotSpeed = 6;
+		if( rotating == false){
+			if (Input.GetButton ("X") ) {
+					rotating = true;
+		
+					down = false;
+					right = false;
+					left = false;
+					up = false;
+					forward = true;//
+					back = false;
+
+			}
+			else if (Input.GetButton ("B") ) {
+					rotating = true;
+					
+					down = false;
+					right = false;
+					left = false;
+					up = false;
+					forward = false;
+					back = true;//
+			}
+			else if (Input.GetButton ("A") ) {
+					rotating = true;
+					
+					down = false;
+					right = false;
+					left = true;//
+					up = false;
+					forward = false;
+					back = false;
+			}
+			else if (Input.GetButton ("Y")) {
+				rotating = true;
+				
+				down = false;
+				right = true;//
+				left = false;
+				up = false;
+				forward = false;
+				back = false;
+			}
+			else if (Input.GetButton ("R")) {
+				rotating = true;
+				
+				down = true;//
+				right = false;
+				left = false;
+				up = false;
+				forward = false;
+				back = false;
+			}
+			else if (Input.GetButton ("L") ) {
+				rotating = true;
+				
+				down = false;
+				right = false;
+				left = false;
+				up = true;//
+				forward = false;
+				back = false;
+			}
+		}
+
+
+		if (forward == true) {
+			if (rotAngle < 90 && rotating == true) {
+				rotAngle+=rotSpeed;
+				room.transform.Rotate( Vector3.forward*rotSpeed, Space.World);
+			}
+			if (rotAngle >= 90) {
+				rotating = false;
+				rotAngle = 0;
+			}
+		}
+		else if (back == true) {
+			if (rotAngle <90 && rotating == true) {
+				rotAngle+=rotSpeed;
+				room.transform.Rotate ( Vector3.back*rotSpeed, Space.World);
+			}
+			if (rotAngle >= 90) {
+				rotating = false;
+				rotAngle = 0;
+			}
+			
+		}
+		else if (left == true) {
+			if (rotAngle < 90 && rotating == true) {
+				rotAngle+=rotSpeed;
+				room.transform.Rotate (Vector3.left*rotSpeed, Space.World);
+			}
+			if (rotAngle >= 90) {
+				rotating = false;
+				rotAngle = 0;
+			}
+			
+		}
+		else if (right == true) {
+			if (rotAngle < 90 && rotating == true) {
+				rotAngle+=rotSpeed;
+				room.transform.Rotate(Vector3.right*rotSpeed, Space.World);
+			}
+			if (rotAngle >= 90) {
+				rotating = false;
+				rotAngle = 0;
+			}
+		}
+        else if (down == true) {
+			if (rotAngle < 90 && rotating == true) {
+				rotAngle+=rotSpeed;
+				room.transform.Rotate ( Vector3.down*rotSpeed, Space.World);
+			}
+			if (rotAngle >= 90) {
+				rotating = false;
+				rotAngle = 0;
+			}
+			
+		}
+		else if (up == true) {
+			if (rotAngle < 90 && rotating == true) {
+				rotAngle+=rotSpeed;
+				room.transform.Rotate ( Vector3.up*rotSpeed, Space.World);
+			}
+			if (rotAngle >= 90) {
+				rotating = false;
+				rotAngle = 0;
+			}
+			
+		}
+
+
+//		Vector3 roomOri = room.transform.rotation.eulerAngles;
+//		roomOri.x = StickToNinty (roomOri.x,8);
+//		roomOri.y = StickToNinty (roomOri.y,8);
+//		roomOri.z = StickToNinty (roomOri.z,8);
+//		room.transform.rotation = Quaternion.Euler (roomOri);
+
+		if(rotating==false){
+			velMax(7f,0.03f);
+			characterHover(2.2f);
+			characterMove();
+		}
+	}
 }

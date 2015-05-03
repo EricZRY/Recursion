@@ -5,7 +5,7 @@ using TMPro;
 
 public class Controller : MonoBehaviour {
 	public static bool clibrateMode = false;
-
+	public static string controlMode = "gamepad";
 
 	private float firstHeading=0;
 	private bool sceneInit=false;
@@ -70,225 +70,231 @@ public class Controller : MonoBehaviour {
 	}
 
 	void Update () {
+		if (controlMode == "gamepad") {
+
+		}
+
+		else if(controlMode=="cubic"){
 		//--------------------------get euler angles--------------------------------------
 		//set heading value to zero
-		if (getFirstValue==false && Input.GetAxis("Heading" )!=0) {
+			if (getFirstValue==false && Input.GetAxis("Heading" )!=0) {
+				
+				firstHeading=(Input.GetAxis("Heading" )+1)*180-180;
+				getFirstValue=true;
+				//Debug.Log (firstHeading);
+			}
 			
-			firstHeading=(Input.GetAxis("Heading" )+1)*180-180;
-			getFirstValue=true;
-			//Debug.Log (firstHeading);
-		}
-		
-		
-		if(calibrateFin==4  ){
+			
+			if(calibrateFin==4  ){
 
-			calculateHeading(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sensorValueAtZero);
-
-		}
-		else{
-
-			if(defaultCalibrateValue[0]==0 && defaultCalibrateValue[1]==0 && defaultCalibrateValue[2]==0  && defaultCalibrateValue[3]==0){
 				calculateHeading(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sensorValueAtZero);
+
 			}
 			else{
-				calculateHeading(defaultCalibrateValue[0],defaultCalibrateValue[1],defaultCalibrateValue[2],defaultCalibrateValue[3]);
 
-			}
-		}
-
-
-		pitch = (Input.GetAxis("Pitch")+1)*90-90;
-		roll = (Input.GetAxis ("Roll")+1)*180-180; 
-
-
-//		if ((Input.GetButtonDown ("X")) || (Input.GetButtonDown ("Y")) || (Input.GetButtonDown ("Z"))) {
-//			
-//			pitchError = getError(pitch);
-//			headingError = getError(heading);
-//			rollError = getError(roll);
-//		}
-//		heading = heading + headingError;
-//		pitch = pitch + pitchError;
-//		roll = roll + rollError;
-
-		if(StickToNinty (pitch, 20)==0){
-			pitch = StickToNinty (pitch, 20);
-			heading = StickToNinty (heading, 25);
-			roll = StickToNinty (roll, 20);
-			
-		}
-		else if(Mathf.Abs( StickToNinty (pitch, 20))==90){
-			pitch = StickToNinty (pitch, 20);
-		}
-		//Debug.Log (heading);
-
-
-
-
-
-
-		//--------------------------calibrate----------------------------
-
-		if (clibrateMode==true) {
-
-			if(text==null || animator==null || arrows==null || arrow==null 
-			   || ctrCube==null || innerScene==null || sceneHolder==null 
-			   || structure==null || backGround==null){
-
-
-				 backGround=GameObject.Find("pCube1");
-				 structure=GameObject.Find("structure");
-				 sceneHolder=GameObject.Find("scene");
-				 innerScene=GameObject.Find ("innerscene");
-				 ctrCube=GameObject.Find("controllerCube");
-				 arrow=GameObject.Find("arrow");
-				 arrows=GameObject.Find("arrows");
-				 animator = GameObject.Find("Cube"). GetComponent<Animator>();
-
-				 text=  GameObject.Find("Text1").GetComponent<TextMeshPro>();
-
-			}
-
-
-			if(sceneInit==false){
-				if((heading!=0 || pitch!=0 || roll!=0) ){
-					gettoOriginalOrientation=false;
-					ctrCube.transform.rotation=Quaternion.Euler( new Vector3(pitch,heading,roll));
-
-				}
-				else {
-					gettoOriginalOrientation=true;
-				}
-				
-				sceneInit=true;
-			}
-
-			//if not in original orientation
-			if(gettoOriginalOrientation ==false){
-
-				if(StickToNinty( ctrCube.transform.rotation.eulerAngles.x,1)==0  &&
-				   StickToNinty( ctrCube.transform.rotation.eulerAngles.y,1)==0  &&
-				   StickToNinty( ctrCube.transform.rotation.eulerAngles.z,1)==0 
-				   ){
-
-					if(text.color.a < 0.05){
-						text.color=new Color(1,1,1,0);
-						gettoOriginalOrientation = true;
-					}
-					else{
-						text.color=Color.Lerp(text.color, new Color(1,1,1,0), Time.deltaTime * 5f);
-					}
-
+				if(defaultCalibrateValue[0]==0 && defaultCalibrateValue[1]==0 && defaultCalibrateValue[2]==0  && defaultCalibrateValue[3]==0){
+					calculateHeading(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sensorValueAtZero);
 				}
 				else{
-					if(StickToNinty( backGround.transform.rotation.eulerAngles.x,1)!=0  ||
-					   StickToNinty( backGround.transform.rotation.eulerAngles.y,1)!=0  ||
-					   StickToNinty( backGround.transform.rotation.eulerAngles.z,1)!=0 
-					   ){
-						backGround.transform.rotation=Quaternion.Lerp( backGround.transform.rotation,Quaternion.Euler( 0,0,0), Time.deltaTime*4);
-					}
-					else{
-						backGround.transform.rotation=Quaternion.Euler( 0,0,0);
-					}
-
-					ctrCube.transform.rotation=Quaternion.Lerp( ctrCube.transform.rotation,Quaternion.Euler( new Vector3(pitch,heading,roll)), Time.deltaTime*4);
-					
-					
-
-					specularLerp(backGround,new Color(0.03f,0.03f,0.03f,1),new Color32(62,21,3,255),0.5f);
-					specularLerp(structure,new Color32(11,3,0,255),new Color32(58,51,13,255),0.5f);
-					specularLerp(arrow,new Color32(98,94,81,255),new Color32(21,105,102,255),0.5f);
-					specularLerp(arrows,new Color32(68,36,6,255),new Color32(116,122,246,255),0.5f);
-
-					//"rotate the controller until you see the two arrows point to the same direction  "
-					if(checkValues(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sensorValueAtZero)==5){
-						text.GetComponent<TextMeshPro>().SetText("rotate the cube until you see\nthe two arrows point to the same direction",0f);
-					}
-					else if(checkValues(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sensorValueAtZero)==0){
-						text.GetComponent<TextMeshPro>().SetText("Illegal values. Please do it again\nrotate the cube until you see\nthe two arrows point to the same direction",0f);
-					}
-					text.color=Color.Lerp(text.color, Color.white, Time.deltaTime * 1f);
+					calculateHeading(defaultCalibrateValue[0],defaultCalibrateValue[1],defaultCalibrateValue[2],defaultCalibrateValue[3]);
 
 				}
 			}
 
-			if(gettoOriginalOrientation==true && getFourValues==false){
-				specularLerp(backGround,new Color32(96,99,95,255),new Color32(112,86,0,255),0.5f);
-				specularLerp(structure,new Color32(79,45,32,255),new Color32(148,0,0,255),0.5f);			
-				specularLerp(arrow,new Color32(118,102,32,255),new Color32(255,90,0,255),0.5f);
-				specularLerp(arrows,new Color32(98,94,81,255),new Color32(21,105,102,255),0.5f);
+
+			pitch = (Input.GetAxis("Pitch")+1)*90-90;
+			roll = (Input.GetAxis ("Roll")+1)*180-180; 
+
+
+	//		if ((Input.GetButtonDown ("X")) || (Input.GetButtonDown ("Y")) || (Input.GetButtonDown ("Z"))) {
+	//			
+	//			pitchError = getError(pitch);
+	//			headingError = getError(heading);
+	//			rollError = getError(roll);
+	//		}
+	//		heading = heading + headingError;
+	//		pitch = pitch + pitchError;
+	//		roll = roll + rollError;
+
+			if(StickToNinty (pitch, 20)==0){
+				pitch = StickToNinty (pitch, 20);
+				heading = StickToNinty (heading, 25);
+				roll = StickToNinty (roll, 20);
+				
+			}
+			else if(Mathf.Abs( StickToNinty (pitch, 20))==90){
+				pitch = StickToNinty (pitch, 20);
+			}
+			//Debug.Log (heading);
 
 
 
-				//"rotate the controller colckwise" 
-				text.GetComponent<TextMeshPro>().SetText("keep the arrow up\nand rotate the cube colckwise",0f);
-				text.color=Color.Lerp(text.color, Color.white, Time.deltaTime * 1f);
 
-				//cube rotating animation
-				animator.SetBool("getfourvalues", true);
 
-				//controller control the room
-				backGround.transform.rotation=Quaternion.Lerp( backGround.transform.rotation,Quaternion.Euler( new Vector3(pitch,heading,roll)), Time.deltaTime*4);
 
-				//get the four values
-				if(Input.GetButtonDown("Z")  || Input.GetMouseButtonDown(0)){
-					havingValue=true;
+			//--------------------------calibrate----------------------------
+
+			if (clibrateMode==true) {
+
+				if(text==null || animator==null || arrows==null || arrow==null 
+				   || ctrCube==null || innerScene==null || sceneHolder==null 
+				   || structure==null || backGround==null){
+
+
+					 backGround=GameObject.Find("pCube1");
+					 structure=GameObject.Find("structure");
+					 sceneHolder=GameObject.Find("scene");
+					 innerScene=GameObject.Find ("innerscene");
+					 ctrCube=GameObject.Find("controllerCube");
+					 arrow=GameObject.Find("arrow");
+					 arrows=GameObject.Find("arrows");
+					 animator = GameObject.Find("Cube"). GetComponent<Animator>();
+
+					 text=  GameObject.Find("Text1").GetComponent<TextMeshPro>();
+
 				}
-				if(havingValue){
-					calibrateFin+=1;
-					if(calibrateFin==1){
-						sensorValueAtNinty=(Input.GetAxis("Heading" )+1)*180-180;
-						Debug.Log((Input.GetAxis("Heading" )+1)*180-180);
-						havingValue=false;
+
+
+				if(sceneInit==false){
+					if((heading!=0 || pitch!=0 || roll!=0) ){
+						gettoOriginalOrientation=false;
+						ctrCube.transform.rotation=Quaternion.Euler( new Vector3(pitch,heading,roll));
+
 					}
-					else if(calibrateFin==2){
-						sensorValueAtPi=(Input.GetAxis("Heading" )+1)*180-180;
-						Debug.Log((Input.GetAxis("Heading" )+1)*180-180);
-						havingValue=false;
+					else {
+						gettoOriginalOrientation=true;
 					}
-					else if(calibrateFin==3){
-						sensorValueAtTwoSeven=(Input.GetAxis("Heading" )+1)*180-180;
-						Debug.Log((Input.GetAxis("Heading" )+1)*180-180);
-						havingValue=false;
-					}
-					else if(calibrateFin==4){
-						sensorValueAtZero=(Input.GetAxis("Heading" )+1)*180-180;
-						Debug.Log((Input.GetAxis("Heading" )+1)*180-180);
-						havingValue=false;
-					}
+					
+					sceneInit=true;
 				}
 
-				//check the values
-				if(calibrateFin==4){
-					//illegal values
-					if(checkValues(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sensorValueAtZero)==0){
-						calibrateFin=0;
-						ctrCube.transform.rotation=Quaternion.Lerp( ctrCube.transform.rotation,Quaternion.Euler( new Vector3(pitch,heading,roll)), Time.deltaTime*4);
-						backGround.transform.rotation=Quaternion.Lerp( backGround.transform.rotation,Quaternion.Euler( 0,0,0), Time.deltaTime*4);
-						gettoOriginalOrientation =false;
-						animator.SetBool("getfourvalues", false);
-					}
+				//if not in original orientation
+				if(gettoOriginalOrientation ==false){
 
+					if(StickToNinty( ctrCube.transform.rotation.eulerAngles.x,1)==0  &&
+					   StickToNinty( ctrCube.transform.rotation.eulerAngles.y,1)==0  &&
+					   StickToNinty( ctrCube.transform.rotation.eulerAngles.z,1)==0 
+					   ){
+
+						if(text.color.a < 0.05){
+							text.color=new Color(1,1,1,0);
+							gettoOriginalOrientation = true;
+						}
+						else{
+							text.color=Color.Lerp(text.color, new Color(1,1,1,0), Time.deltaTime * 5f);
+						}
+
+					}
 					else{
-						//get values successfully, back to menu
-						animator.SetBool("getfourvalues", false);
-						text.GetComponent<TextMeshPro>().SetText("calibration finished",0f);
+						if(StickToNinty( backGround.transform.rotation.eulerAngles.x,1)!=0  ||
+						   StickToNinty( backGround.transform.rotation.eulerAngles.y,1)!=0  ||
+						   StickToNinty( backGround.transform.rotation.eulerAngles.z,1)!=0 
+						   ){
+							backGround.transform.rotation=Quaternion.Lerp( backGround.transform.rotation,Quaternion.Euler( 0,0,0), Time.deltaTime*4);
+						}
+						else{
+							backGround.transform.rotation=Quaternion.Euler( 0,0,0);
+						}
+
+						ctrCube.transform.rotation=Quaternion.Lerp( ctrCube.transform.rotation,Quaternion.Euler( new Vector3(pitch,heading,roll)), Time.deltaTime*4);
+						
+						
+
+						specularLerp(backGround,new Color(0.03f,0.03f,0.03f,1),new Color32(62,21,3,255),0.5f);
+						specularLerp(structure,new Color32(11,3,0,255),new Color32(58,51,13,255),0.5f);
+						specularLerp(arrow,new Color32(98,94,81,255),new Color32(21,105,102,255),0.5f);
+						specularLerp(arrows,new Color32(68,36,6,255),new Color32(116,122,246,255),0.5f);
+
+						//"rotate the controller until you see the two arrows point to the same direction  "
+						if(checkValues(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sensorValueAtZero)==5){
+							text.GetComponent<TextMeshPro>().SetText("rotate the cube until you see\nthe two arrows point to the same direction",0f);
+						}
+						else if(checkValues(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sensorValueAtZero)==0){
+							text.GetComponent<TextMeshPro>().SetText("Illegal values. Please do it again\nrotate the cube until you see\nthe two arrows point to the same direction",0f);
+						}
 						text.color=Color.Lerp(text.color, Color.white, Time.deltaTime * 1f);
-						clibrateMode=false;
-						StartCoroutine(backToMenu());
+
 					}
 				}
 
-			
-				//if rotate wrong, back to last step
-				if(StickToNinty( backGround.transform.rotation.eulerAngles.x,1)!=0  ||
-				   StickToNinty( backGround.transform.rotation.eulerAngles.z,1)!=0 
-				   ){
-						calibrateFin=0;
-						ctrCube.transform.rotation=Quaternion.Lerp( ctrCube.transform.rotation,Quaternion.Euler( new Vector3(pitch,heading,roll)), Time.deltaTime*4);
-						backGround.transform.rotation=Quaternion.Lerp( backGround.transform.rotation,Quaternion.Euler( 0,0,0), Time.deltaTime*4);
-						gettoOriginalOrientation =false;
-						animator.SetBool("getfourvalues", false);
+				if(gettoOriginalOrientation==true && getFourValues==false){
+					specularLerp(backGround,new Color32(96,99,95,255),new Color32(112,86,0,255),0.5f);
+					specularLerp(structure,new Color32(79,45,32,255),new Color32(148,0,0,255),0.5f);			
+					specularLerp(arrow,new Color32(118,102,32,255),new Color32(255,90,0,255),0.5f);
+					specularLerp(arrows,new Color32(98,94,81,255),new Color32(21,105,102,255),0.5f);
+
+
+
+					//"rotate the controller colckwise" 
+					text.GetComponent<TextMeshPro>().SetText("keep the arrow up\nand rotate the cube colckwise",0f);
+					text.color=Color.Lerp(text.color, Color.white, Time.deltaTime * 1f);
+
+					//cube rotating animation
+					animator.SetBool("getfourvalues", true);
+
+					//controller control the room
+					backGround.transform.rotation=Quaternion.Lerp( backGround.transform.rotation,Quaternion.Euler( new Vector3(pitch,heading,roll)), Time.deltaTime*4);
+
+					//get the four values
+					if(Input.GetButtonDown("Z")  || Input.GetMouseButtonDown(0)){
+						havingValue=true;
+					}
+					if(havingValue){
+						calibrateFin+=1;
+						if(calibrateFin==1){
+							sensorValueAtNinty=(Input.GetAxis("Heading" )+1)*180-180;
+							Debug.Log((Input.GetAxis("Heading" )+1)*180-180);
+							havingValue=false;
+						}
+						else if(calibrateFin==2){
+							sensorValueAtPi=(Input.GetAxis("Heading" )+1)*180-180;
+							Debug.Log((Input.GetAxis("Heading" )+1)*180-180);
+							havingValue=false;
+						}
+						else if(calibrateFin==3){
+							sensorValueAtTwoSeven=(Input.GetAxis("Heading" )+1)*180-180;
+							Debug.Log((Input.GetAxis("Heading" )+1)*180-180);
+							havingValue=false;
+						}
+						else if(calibrateFin==4){
+							sensorValueAtZero=(Input.GetAxis("Heading" )+1)*180-180;
+							Debug.Log((Input.GetAxis("Heading" )+1)*180-180);
+							havingValue=false;
+						}
+					}
+
+					//check the values
+					if(calibrateFin==4){
+						//illegal values
+						if(checkValues(sensorValueAtNinty,sensorValueAtPi,sensorValueAtTwoSeven,sensorValueAtZero)==0){
+							calibrateFin=0;
+							ctrCube.transform.rotation=Quaternion.Lerp( ctrCube.transform.rotation,Quaternion.Euler( new Vector3(pitch,heading,roll)), Time.deltaTime*4);
+							backGround.transform.rotation=Quaternion.Lerp( backGround.transform.rotation,Quaternion.Euler( 0,0,0), Time.deltaTime*4);
+							gettoOriginalOrientation =false;
+							animator.SetBool("getfourvalues", false);
+						}
+
+						else{
+							//get values successfully, back to menu
+							animator.SetBool("getfourvalues", false);
+							text.GetComponent<TextMeshPro>().SetText("calibration finished",0f);
+							text.color=Color.Lerp(text.color, Color.white, Time.deltaTime * 1f);
+							clibrateMode=false;
+							StartCoroutine(backToMenu());
+						}
+					}
+
+				
+					//if rotate wrong, back to last step
+					if(StickToNinty( backGround.transform.rotation.eulerAngles.x,1)!=0  ||
+					   StickToNinty( backGround.transform.rotation.eulerAngles.z,1)!=0 
+					   ){
+							calibrateFin=0;
+							ctrCube.transform.rotation=Quaternion.Lerp( ctrCube.transform.rotation,Quaternion.Euler( new Vector3(pitch,heading,roll)), Time.deltaTime*4);
+							backGround.transform.rotation=Quaternion.Lerp( backGround.transform.rotation,Quaternion.Euler( 0,0,0), Time.deltaTime*4);
+							gettoOriginalOrientation =false;
+							animator.SetBool("getfourvalues", false);
+					}
 				}
 			}
 		}

@@ -25,13 +25,13 @@ public class splashMain : MonoBehaviour {
 		menu=GameObject.Find("MENU");
 
 		VRcamera=GameObject.Find("CenterEyeAnchor");
+		DontDestroyOnLoad (GameObject.Find("OVRPlayerController 1"));
 
 		for(int i=0;i<9;i++){
 			string menuid="menu"+(i+1);
 			subMenus[i]=GameObject.Find(menuid);
 		}
 
-		loadObject ("prefabs/Controller","Controller(Clone)", new Vector3(0, 0, 0), Quaternion.identity);
 
 		SoundManager.instance.BGMSource.Stop();
 		SoundManager.instance.secondBGM=false;
@@ -125,10 +125,13 @@ public class splashMain : MonoBehaviour {
 //		}
 //
 
+		if (Input.GetKey (KeyCode.Escape)) {
+			Application.Quit();
+		}
 
 		RaycastHit hit;
 		if (Physics.Raycast(VRcamera.transform.position, VRcamera.transform.TransformDirection(Vector3.forward),out hit,10)){
-			if(subMenus[3].transform.position.z==0 && hit.collider.gameObject.name=="start"){
+			if(subMenus[3].transform.position.z==0 && ( hit.collider.gameObject.name=="startc")){
 				if(audioPlay==true){
 					SoundManager.instance.PlaySingle(SoundManager.instance.smallHighlight);
 					audioPlay=false;
@@ -136,26 +139,46 @@ public class splashMain : MonoBehaviour {
 
 
 				//Debug.Log("load select level scene");
-				loadObject("prefabs/bar","bar(Clone)", hit.collider.transform.position+ new Vector3(0,-1,0),Quaternion.identity);
+				//loadObject("prefabs/bar","bar(Clone)", hit.collider.transform.position+ new Vector3(0,-1,0),Quaternion.identity);
 
-				GameObject mask=GameObject.Find("mask");
-				GameObject selection=GameObject.Find("start");
-				mask.transform.localScale*=0.8f;
-				selection.renderer.material.color= Color.Lerp(new Color32(88,99,96,255),new Color32(112,56,56,255),1-mask.transform.lossyScale.x);
+				//GameObject mask=GameObject.Find("mask");
+				GameObject selection=GameObject.Find("startc");
+				//mask.transform.localScale*=0.8f;
+				selection.renderer.material.color= Color.Lerp(selection.renderer.material.color,new Color32(200,40,170,255),Time.deltaTime*3);
 
-				if(mask.transform.localScale.x<0.1f){
+				if(selection.renderer.material.color.g*255<45){
 //					if(Controller.calibrateFin!=4){
 //						Controller.clibrateMode=true;
 //						Application.LoadLevel("clibrate");
 //					}
 //					else{
 					SoundManager.instance.PlaySingle(SoundManager.instance.select);
+						Destroy(GameObject.Find("OVRPlayerController 1"));
 
-						Application.LoadLevel("selectLevel");
+						Application.LoadLevel("level1");
 //					}
 				}
 			}
-			else if(subMenus[2].transform.position.z==0 && hit.collider.gameObject.name=="calibrate"){
+			else if(subMenus[3].transform.position.z==0 && (hit.collider.gameObject.name=="continuec" )){
+				if(audioPlay==true){
+					SoundManager.instance.PlaySingle(SoundManager.instance.smallHighlight);
+					audioPlay=false;
+				}
+				GameObject selection=GameObject.Find("continuec");
+				//mask.transform.localScale*=0.8f;
+				selection.renderer.material.color= Color.Lerp(selection.renderer.material.color,new Color32(200,40,170,255),Time.deltaTime*3);
+				
+				if(selection.renderer.material.color.g*255<45){
+					//					if(Controller.calibrateFin!=4){
+					//						Controller.clibrateMode=true;
+					//						Application.LoadLevel("clibrate");
+					//					}
+					//					else{
+					SoundManager.instance.PlaySingle(SoundManager.instance.select);
+					
+					Application.LoadLevel("selectLevel");
+					//					}
+				}
 //				loadObject("prefabs/bar","bar(Clone)", hit.collider.transform.position+ new Vector3(0,-1,0),Quaternion.identity);
 //				
 //				GameObject mask=GameObject.Find("mask");
@@ -171,31 +194,38 @@ public class splashMain : MonoBehaviour {
 			}
 			//else if(subMenus[1].transform.position.z==0 && hit.collider.gameObject.name=="quit"){
 
-			else if(subMenus[3].transform.position.z==0 && hit.collider.gameObject.name=="quit"){
+			else if(subMenus[3].transform.position.z==0 && hit.collider.gameObject.name=="quitc"){
 				//Debug.Log("load select level scene");
 				if(audioPlay==true){
 					SoundManager.instance.PlaySingle(SoundManager.instance.smallHighlight);
 					audioPlay=false;
 				}
 
-				loadObject("prefabs/bar","bar(Clone)", hit.collider.transform.position+ new Vector3(0,-1,0),Quaternion.identity);
+
+				GameObject selection=GameObject.Find("quitc");
+				selection.renderer.material.color= Color.Lerp(selection.renderer.material.color,new Color32(200,40,170,255),Time.deltaTime*3);
 				
-				GameObject mask=GameObject.Find("mask");
-				GameObject selection=GameObject.Find("quit");
-				mask.transform.localScale*=0.9f;
-				selection.renderer.material.color= Color.Lerp(new Color32(88,99,96,255),new Color32(112,56,56,255),1-mask.transform.lossyScale.x);
-				
-				if(mask.transform.lossyScale.x<0.1f){
+				if(selection.renderer.material.color.g*255<45){
+					//					if(Controller.calibrateFin!=4){
+					//						Controller.clibrateMode=true;
+					//						Application.LoadLevel("clibrate");
+					//					}
+					//					else{
+					SoundManager.instance.PlaySingle(SoundManager.instance.select);
+					
 					Application.Quit();
+					//					}
 				}
 			}
 		}
 		else{
 			audioPlay=true;
-			Destroy(GameObject.Find("bar(Clone)"));
-			GameObject.Find("start").renderer.material.color=new Color32(88,99,96,255);
+
+			GameObject.Find("startc").renderer.material.color=Color.Lerp(GameObject.Find("startc").renderer.material.color,new Color32(0,255,128,255),Time.deltaTime*3);
 			//GameObject.Find("calibrate").renderer.material.color=new Color32(88,99,96,255);
-			GameObject.Find("quit").renderer.material.color=new Color32(88,99,96,255);
+			GameObject.Find("quitc").renderer.material.color=Color.Lerp(GameObject.Find("quitc").renderer.material.color,new Color32(0,255,128,255),Time.deltaTime*3);
+			GameObject.Find("continuec").renderer.material.color=Color.Lerp(GameObject.Find("continuec").renderer.material.color,new Color32(0,255,128,255),Time.deltaTime*3);
+
 		}
 
 	}

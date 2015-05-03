@@ -36,6 +36,9 @@ public class selectLevel : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (Input.GetKey (KeyCode.Escape)) {
+			Application.Quit();
+		}
 		RaycastHit hit;
 		if (Physics.Raycast (VRcamera.transform.position, VRcamera.transform.TransformDirection (Vector3.forward), out hit)) {
 			if(hit.collider.gameObject==GameObject.Find("right") && moved ==false){
@@ -93,6 +96,8 @@ public class selectLevel : MonoBehaviour {
 								SoundManager.instance.BGMSource.Stop();
 								SoundManager.instance.PlaySingle(SoundManager.instance.select);
 								}
+								 	Destroy(GameObject.Find("OVRPlayerController 1"));
+
 									Application.LoadLevel("level"+(i+1));
 
 							}

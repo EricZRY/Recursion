@@ -17,7 +17,9 @@ public class intro : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
+		if (Input.GetKey (KeyCode.Escape)) {
+			Application.Quit();
+		}
 		if(VRcamera.transform.rotation.eulerAngles!= new Vector3(0,0,0)){
 			init=true;
 		}
@@ -35,7 +37,7 @@ public class intro : MonoBehaviour {
 
 			}
 			if(text.renderer.material.color.a<0.05){
-				Application.LoadLevel("Splash");
+				Application.LoadLevel("intro2");
 			}
 
 
