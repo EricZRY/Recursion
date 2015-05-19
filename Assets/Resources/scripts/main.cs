@@ -10,6 +10,7 @@ public class main : MonoBehaviour {
 	public string WinFace;
 
 	private GameObject forwardAim;
+	private GameObject MainMenu;
 
 	public GameObject controller;
 
@@ -42,6 +43,8 @@ public class main : MonoBehaviour {
 	
 	private bool audioPlay=true;
 
+	public bool exiting = false;
+	public bool forwarding = false;
 
 	public static main instance { get; private set; }
 
@@ -62,6 +65,7 @@ public class main : MonoBehaviour {
 			VRcamera = GameObject.Find ("CenterEyeAnchor");
 
 		}
+
 
 		if(character.transform.parent != innerRoom.transform){
 			character.transform.parent = innerRoom.transform;
@@ -134,6 +138,8 @@ public class main : MonoBehaviour {
 	
 	void Start () {
 		forwardAim = GameObject.Find ("faim");
+		MainMenu = GameObject.Find ("exit");
+
 		rotating = false;
 		rotAngle = 0;
 		if (Controller.controlMode == "cubic") {
@@ -145,7 +151,12 @@ public class main : MonoBehaviour {
 	}
 	
 	void Update () {
-
+		if (forwardAim == null) {
+			forwardAim = GameObject.Find ("faim");
+		}
+		if (MainMenu == null) {
+			MainMenu = GameObject.Find ("exit");
+		}
 
 
 		if(mode == "GamePad"){
@@ -228,7 +239,22 @@ public class main : MonoBehaviour {
 			}
 
 
-	
+		if (exiting == true) {
+			MainMenu.renderer.material.color=Color.Lerp(MainMenu.renderer.material.color,new Color32(200,40,170,98),Time.deltaTime*4);
+			MainMenu.transform.GetChild(0).gameObject.renderer.material.color=Color.Lerp(MainMenu.transform.GetChild(0).gameObject.renderer.material.color,new Color32(255,255,255,98),Time.deltaTime*4);
+
+			if(MainMenu.renderer.material.color.g<0.16f){
+				foreach (GameObject o in Object.FindObjectsOfType<GameObject>()) {
+					Destroy(o);
+				}
+				Application.LoadLevel("intro");
+			}
+		}
+		else{
+			MainMenu.renderer.material.color=Color.Lerp(MainMenu.renderer.material.color,new Color32(255,255,255,98),Time.deltaTime*4);
+			MainMenu.transform.GetChild(0).gameObject.renderer.material.color=Color.Lerp(MainMenu.transform.GetChild(0).gameObject.renderer.material.color,new Color32(255,255,255,0),Time.deltaTime*4);
+
+		}
 
 
 		if (Application.loadedLevelName != "level1") {
@@ -321,7 +347,8 @@ public class main : MonoBehaviour {
 		}
 
 		//Debug.Log (VRcamera.transform.rotation.eulerAngles.x);
-		if (Mathf.Abs (VRcamera.transform.rotation.eulerAngles.x) < 2.5f || Mathf.Abs (360-VRcamera.transform.rotation.eulerAngles.x)  < 2.5f) {
+		if ((Mathf.Abs (VRcamera.transform.rotation.eulerAngles.x) < 2.5f || Mathf.Abs (360-VRcamera.transform.rotation.eulerAngles.x)  < 2.5f) ||
+		    forwarding==true){
 
 			moving=true;
 		}
@@ -484,6 +511,25 @@ public class main : MonoBehaviour {
 		character.transform.rotation = Quaternion.Euler( 0,0,0);
 		forwardAim.transform.rotation =
 			Quaternion.Euler (0,VRcamera.transform.rotation.eulerAngles.y,transform.rotation.eulerAngles.z);
+
+		if (exiting == true) {
+			MainMenu.renderer.material.color=Color.Lerp(MainMenu.renderer.material.color,new Color32(200,40,170,98),Time.deltaTime*4);
+			MainMenu.transform.GetChild(0).gameObject.renderer.material.color=Color.Lerp(MainMenu.transform.GetChild(0).gameObject.renderer.material.color,new Color32(255,255,255,98),Time.deltaTime*4);
+			
+			if(MainMenu.renderer.material.color.g<0.16f){
+				foreach (GameObject o in Object.FindObjectsOfType<GameObject>()) {
+					Destroy(o);
+				}
+				Application.LoadLevel("intro");
+			}
+		}
+		else{
+			MainMenu.renderer.material.color=Color.Lerp(MainMenu.renderer.material.color,new Color32(255,255,255,98),Time.deltaTime*4);
+			MainMenu.transform.GetChild(0).gameObject.renderer.material.color=Color.Lerp(MainMenu.transform.GetChild(0).gameObject.renderer.material.color,new Color32(255,255,255,0),Time.deltaTime*4);
+			
+		}
+
+
 
 		int rotSpeed = 6;
 		if( rotating == false){

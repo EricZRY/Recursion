@@ -86,7 +86,7 @@ public class characterCollid : MonoBehaviour {
 			}
 
 		}
-		Debug.DrawRay(main.instance.character.transform.position-Vector3.up*1.6f,Vector3.down, Color.green);
+		//Debug.DrawRay(main.instance.character.transform.position-Vector3.up*1.6f,Vector3.down, Color.green);
 		if (Physics.Raycast (downRay, out downhit)) {
 			if(downhit.distance<1f  ){
 				if(downhit.transform.gameObject.tag=="spikes" ){

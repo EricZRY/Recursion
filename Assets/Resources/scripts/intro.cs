@@ -17,6 +17,17 @@ public class intro : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (VRcamera == null) {
+						VRcamera = GameObject.Find ("CenterEyeAnchor");
+		}
+		if (text == null) {
+						text = GameObject.Find ("introText");
+				}
+		if (circle == null) {
+						circle = GameObject.Find ("circle");
+				}
+
+
 		if (Input.GetKey (KeyCode.Escape)) {
 			Application.Quit();
 		}

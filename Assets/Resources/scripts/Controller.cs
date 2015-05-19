@@ -5,7 +5,7 @@ using TMPro;
 
 public class Controller : MonoBehaviour {
 	public static bool clibrateMode = false;
-	public static string controlMode = "notselected";
+	public static string controlMode = "gamepad";
 
 	private float firstHeading=0;
 	private bool sceneInit=false;
@@ -70,10 +70,10 @@ public class Controller : MonoBehaviour {
 	}
 
 	void Update () {
+
 		if (controlMode == "gamepad") {
 
 		}
-
 		else if(controlMode=="cubic"){
 		//--------------------------get euler angles--------------------------------------
 		//set heading value to zero
